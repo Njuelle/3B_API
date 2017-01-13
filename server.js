@@ -20,7 +20,7 @@ var router = express.Router();
 
 // Register all our routes with /api and use routes.js
 app.use('/api', routes);
-app.use(passport.initialize());
+// app.use(passport.initialize());<
 
 // Start the server
 app.listen(port);
