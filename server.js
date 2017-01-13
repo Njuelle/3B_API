@@ -24,6 +24,7 @@ app.use('/api', routes);
 
 // Start the server
 app.listen(port);
+
 console.log('3B API starded on port ' + port);
 
 module.exports = app;
