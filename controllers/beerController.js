@@ -1,7 +1,7 @@
 var Beer = require('../models/beer');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;    
-mongoose.connect('mongodb://localhost:27017/beerlocker');
+mongoose.connect('mongodb://localhost:27017/3bdb');
 
 module.exports = {
     getBeerById : function(req, res) {
