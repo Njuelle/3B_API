@@ -1,32 +1,32 @@
 // Load required packages
-var User = require('../models/user');
+var Membre = require('../models/membre');
 var authController = require('../controllers/authController');
 
 module.exports = {
     
-    postUser : function(req, res) {
-        var user = new User({
+    postMembre : function(req, res) {
+        var membre = new Membre({
             username: req.body.username,
             password: req.body.password
         });
-        user.save(function(err) {
+        membre.save(function(err) {
             if (err){
                 res.send(err);
             }
-            res.json({ message: 'new user added' });
+            res.json({ message: 'new membre added' });
         });
     },
 
-    getUser : function(req, res) {
+    getMembre : function(req, res) {
         var token = req.headers['x-access-token'];
         var isAuth = authController.isAuth(token);
         
         if (token && isAuth) {
-            User.find(function(err, users) {
+            Membre.find(function(err, membres) {
                 if (err){
                     res.send(err);
                 }
-                res.json(users);
+                res.json(membres);
             });
         } else {
             res.json({ message: 'error' });

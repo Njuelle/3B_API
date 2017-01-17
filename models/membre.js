@@ -3,8 +3,8 @@ var mongoose = require('mongoose');
 var bcrypt   = require('bcrypt-nodejs');
 var jwt      = require('jsonwebtoken');
 
-// Define our user schema
-var UserSchema = new mongoose.Schema({
+// Define our membre schema
+var MembreSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
@@ -16,11 +16,11 @@ var UserSchema = new mongoose.Schema({
     }
 });
 
-// Execute before each user.save() call
-UserSchema.pre('save', function(callback) {
-    var user = this;
+// Execute before each membre.save() call
+MembreSchema.pre('save', function(callback) {
+    var membre = this;
     // Break out if the password hasn't changed
-    if (!user.isModified('password')){
+    if (!membre.isModified('password')){
         return callback();
     }    
     // Password changed so we need to hash it
@@ -28,17 +28,17 @@ UserSchema.pre('save', function(callback) {
         if (err){
             return callback(err);  
         } 
-        bcrypt.hash(user.password, salt, null, function(err, hash) {
+        bcrypt.hash(membre.password, salt, null, function(err, hash) {
             if (err){
                 return callback(err);
             } 
-            user.password = hash;
+            membre.password = hash;
             callback();
         });
     });
 });
 
-UserSchema.methods.verifyPassword = function(password, callback) {
+MembreSchema.methods.verifyPassword = function(password, callback) {
     bcrypt.compare(password, this.password, function(err, isMatch) {
         if (err){
             return callback(err);  
@@ -48,4 +48,4 @@ UserSchema.methods.verifyPassword = function(password, callback) {
 };
 
 // Export the Mongoose model
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Membre', MembreSchema);

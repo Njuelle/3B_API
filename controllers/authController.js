@@ -1,22 +1,22 @@
 var jwt           = require('jsonwebtoken');
 var mongoose      = require('mongoose');
-var User          = require('../models/user');
+var Membre          = require('../models/membre');
 
 mongoose.connect('mongodb://localhost:27017/3bdb');
 
 module.exports = {
 
     authenticate : function(req, res) {
-        User.findOne({ username: req.body.username }, function (err, user) {
+        Membre.findOne({ username: req.body.username }, function (err, membre) {
             if (err) { 
                 throw err;
             }
-            // No user found with that username
-            if (!user) { 
-                res.json({ success: false, message: 'Authentication failed. User not found.' });
+            // No membre found with that username
+            if (!membre) { 
+                res.json({ success: false, message: 'Authentication failed. Membre not found.' });
             }
             // Make sure the password is correct
-            user.verifyPassword(req.body.password, function(err, isMatch) {
+            membre.verifyPassword(req.body.password, function(err, isMatch) {
                 if (err) { 
                     throw err;
                 }
@@ -25,13 +25,12 @@ module.exports = {
                     res.json({ success: false, message: 'Authentication failed. Wrong password.' });
                 }
                 // Success
-                var token = jwt.sign(user, 'secret', {
+                var token = jwt.sign(membre, 'secret', {
                     expiresIn : 60*60*24
                 });
                 
                 res.json({
                     success: true,
-                    message: 'Enjoy your token!',
                     token: token
                 });
             });
@@ -49,21 +48,21 @@ module.exports = {
     isAuth: function(token) {
         var verifiedToken = this.verifyToken(token);
         if (verifiedToken) {
-            var user = this.getUserFromToken(verifiedToken);
-            if (user) {
+            var membre = this.getMembreFromToken(verifiedToken);
+            if (membre) {
                 return true;
             }
         }
         return false;
     },
 
-    getUserFromToken: function(verifiedToken) {
-        return User.findOne({ id: verifiedToken._doc._id }, function (err, user) {
+    getMembreFromToken: function(verifiedToken) {
+        return Membre.findOne({ id: verifiedToken._doc._id }, function (err, membre) {
             if (err) { 
                 throw err;
             }
-            if (user) { 
-                return user;
+            if (membre) { 
+                return membre;
             }
         });
     }
