@@ -13,16 +13,15 @@ module.exports = {
             if (err){
                 res.send(err);
             }
-            res.json({ message: 'New beer drinker added to the locker room!' });
+            res.json({ message: 'new user added' });
         });
     },
 
     getUser : function(req, res) {
         var token = req.headers['x-access-token'];
-        var isTokenValid = authController.verifyToken(token)
+        var isAuth = authController.isAuth(token);
         
-        if (token && isTokenValid) {
-            console.log('yeah');
+        if (token && isAuth) {
             User.find(function(err, users) {
                 if (err){
                     res.send(err);
@@ -30,7 +29,7 @@ module.exports = {
                 res.json(users);
             });
         } else {
-            res.json({ message: 'Auth failed' });     
+            res.json({ message: 'error' });
         }
        
     }
