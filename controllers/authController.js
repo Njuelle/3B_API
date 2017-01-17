@@ -40,13 +40,32 @@ module.exports = {
 
     verifyToken: function(token) {
         try {
-            var verifiedToken = jwt.verify(token, 'secret');
-            return true;
+            return verifiedToken = jwt.verify(token, 'secret');
         } catch(err) {
             return false; 
         }
+    },
+
+    isAuth: function(token) {
+        var verifiedToken = this.verifyToken(token);
+        if (verifiedToken) {
+            var user = this.getUserFromToken(verifiedToken);
+            if (user) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    getUserFromToken: function(verifiedToken) {
+        return User.findOne({ id: verifiedToken._doc._id }, function (err, user) {
+            if (err) { 
+                throw err;
+            }
+            if (user) { 
+                return user;
+            }
+        });
     }
-
-
 }
 
