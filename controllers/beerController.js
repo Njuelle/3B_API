@@ -1,7 +1,6 @@
 var Beer = require('../models/beer');
-var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;    
-mongoose.connect('mongodb://localhost:27017/3bdb');
+var mongoose = require('mongoose');    
+// mongoose.connect('mongodb://localhost:27017/beerlocker');
 
 module.exports = {
     getBeerById : function(req, res) {
@@ -14,7 +13,7 @@ module.exports = {
     },
 
     getBeers : function(req, res) {
-        Beer.find(function(err, beers) {
+        Beer.find({ userId: req.user._id }, function(err, beers) {
             if (err){
                 res.send(err);
             }
@@ -23,13 +22,13 @@ module.exports = {
     },
 
     postBeer : function(req, res) {
-        console.log('post beer');
         var beer = new Beer();
 
         // Set the beer properties that came from the POST data
         beer.name = req.body.name;
         beer.type = req.body.type;
         beer.quantity = req.body.quantity;
+        beer.userId = req.user._id;
 
         // Save the beer and check for errors
         beer.save(function(err) {
@@ -41,7 +40,7 @@ module.exports = {
     },
 
     putBeerQuantity : function(req, res) {
-        Beer.update({ quantity: req.body.quantity }, function(err, num, raw) {
+        Beer.update({ userId: req.user._id, _id: req.params.beer_id }, { quantity: req.body.quantity }, function(err, num, raw) {
             if (err){
                 res.send(err);
             }
@@ -51,7 +50,7 @@ module.exports = {
     },
 
     deleteBeer : function(req, res) {
-        Beer.remove({_id: req.params.beer_id }, function(err) {
+        Beer.remove({ userId: req.user._id, _id: req.params.beer_id }, function(err) {
             if (err){
                 res.send(err);
             }
