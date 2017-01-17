@@ -3,7 +3,7 @@ var router = express.Router();
 
 var mainController = require('./controllers/mainController');
 var beerController = require('./controllers/beerController');
-var membreController = require('./controllers/membreController');
+var entiteController = require('./controllers/entiteController');
 var authController = require('./controllers/authController');
 
 router.route('/').get(mainController.index);
@@ -16,8 +16,8 @@ router.route('/auth').post(authController.authenticate);
 // router.route('/beer/:beer_id').put(authController.isAuthenticated, beerController.putBeerQuantity);
 // router.route('/beer/:beer_id').delete(authController.isAuthenticated, beerController.deleteBeer);
 
-router.route('/membre').get(membreController.getMembre);
-router.route('/membre').post(membreController.postMembre);
+router.route('/entite').get(entiteController.getEntite);
+router.route('/entite').post(entiteController.postEntite);
 
 
 

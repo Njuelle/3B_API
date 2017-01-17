@@ -1,22 +1,22 @@
 var jwt           = require('jsonwebtoken');
 var mongoose      = require('mongoose');
-var Membre          = require('../models/membre');
+var Entite          = require('../models/entite');
 
 mongoose.connect('mongodb://localhost:27017/3bdb');
 
 module.exports = {
 
     authenticate : function(req, res) {
-        Membre.findOne({ username: req.body.username }, function (err, membre) {
+        Entite.findOne({ username: req.body.username }, function (err, entite) {
             if (err) { 
                 throw err;
             }
-            // No membre found with that username
-            if (!membre) { 
-                res.json({ success: false, message: 'Authentication failed. Membre not found.' });
+            // No entite found with that username
+            if (!entite) { 
+                res.json({ success: false, message: 'Authentication failed. Entite not found.' });
             }
             // Make sure the password is correct
-            membre.verifyPassword(req.body.password, function(err, isMatch) {
+            entite.verifyPassword(req.body.password, function(err, isMatch) {
                 if (err) { 
                     throw err;
                 }
@@ -25,7 +25,7 @@ module.exports = {
                     res.json({ success: false, message: 'Authentication failed. Wrong password.' });
                 }
                 // Success
-                var token = jwt.sign(membre, 'secret', {
+                var token = jwt.sign(entite, 'secret', {
                     expiresIn : 60*60*24
                 });
                 
@@ -48,21 +48,21 @@ module.exports = {
     isAuth: function(token) {
         var verifiedToken = this.verifyToken(token);
         if (verifiedToken) {
-            var membre = this.getMembreFromToken(verifiedToken);
-            if (membre) {
+            var entite = this.getEntiteFromToken(verifiedToken);
+            if (entite) {
                 return true;
             }
         }
         return false;
     },
 
-    getMembreFromToken: function(verifiedToken) {
-        return Membre.findOne({ id: verifiedToken._doc._id }, function (err, membre) {
+    getEntiteFromToken: function(verifiedToken) {
+        return Entite.findOne({ id: verifiedToken._doc._id }, function (err, entite) {
             if (err) { 
                 throw err;
             }
-            if (membre) { 
-                return membre;
+            if (entite) { 
+                return entite;
             }
         });
     }
