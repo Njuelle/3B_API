@@ -55,15 +55,21 @@ module.exports = {
         if (verifiedToken) {
             //Second, check user from token
             Entite.findOne({ _id: verifiedToken._doc._id }, function (err, entite) {
-                if (err) return err;
+                if (err  || !entite) {
+                  res.json({ success: false, message: 'Authentication failed.' });
+                  return;
+                } 
                 //third, check access fonction
-                AccessFonction.findOne({ profil_id: entite.profil_id }, function (err, accessFonction) {
-                    if (err) return err;
+                AccessFonction.findOne({ 'profil_id': entite.profil_id, 'method_name': req.path}, function (err, accessFonction) {
+                    if (err || !accessFonction) {
+                        res.json({ success: false, message: 'No access for this method.' });
+                        return;
+                    }    
                     var isAuth = self.checkAuth(accessFonction, req);
                     if (isAuth) {
                         callback(res);
                     }else{
-                        res.json({ success: false, message: 'Authentication failed.' });
+                        res.json({ success: false, message: 'No access for this method.' });
                     }
                     
                 });
