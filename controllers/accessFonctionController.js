@@ -29,18 +29,12 @@ module.exports = {
     },
 
     getAccessFonction : function(req, res) {
-        var isAuth = authController.isAuth(req);
-        
-        if (isAuth) {
-            AccessFonction.find(function(err, profils) {
-                if (err){
-                    res.send(err);
-                }
-                res.json(profils);
-            });
-        } else {
-            res.json({ message: 'error' });
-        }
+        AccessFonction.find(function(err, accessFonctions) {
+            if (err){
+                res.send(err);
+            }
+            res.json(accessFonctions);
+        });
     }
 
 }

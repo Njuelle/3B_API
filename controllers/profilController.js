@@ -27,16 +27,13 @@ module.exports = {
     },
 
     getProfil : function(req, res) {
-        if (authController.isAuth(req)) {
-            Profil.find(function(err, profils) {
-                if (err){
-                    res.send(err);
-                }
-                res.json(profils);
-            });
-        } else {
-            res.json({ message: 'error' });
-        }
+        Profil.find(function(err, profils) {
+            if (err){
+                res.send(err);
+            }
+            res.json(profils);
+        });
+        
     }
 }
 
