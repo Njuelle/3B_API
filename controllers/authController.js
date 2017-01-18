@@ -75,6 +75,8 @@ module.exports = {
                 });
 
             });
+        } else {
+            res.json({ success: false, message: 'Authentication failed.' });
         }
         
     },
