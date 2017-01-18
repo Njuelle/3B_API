@@ -6,8 +6,9 @@ module.exports = {
     
     postEntite : function(req, res) {
         var entite = new Entite({
-            username: req.body.username,
-            password: req.body.password
+            username  : req.body.username,
+            password  : req.body.password,
+            profil_id : req.body.profil_id
         });
         entite.save(function(err) {
             if (err){
@@ -18,20 +19,14 @@ module.exports = {
     },
 
     getEntite : function(req, res) {
-        var token = req.headers['x-access-token'];
-        var isAuth = authController.isAuth(token);
-        
-        if (token && isAuth) {
+        authController.isAuth(res, req, function(res){
             Entite.find(function(err, entites) {
                 if (err){
                     res.send(err);
                 }
                 res.json(entites);
             });
-        } else {
-            res.json({ message: 'error' });
-        }
-       
+        });
     }
 
 }

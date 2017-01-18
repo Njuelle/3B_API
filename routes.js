@@ -4,20 +4,22 @@ var router = express.Router();
 var mainController = require('./controllers/mainController');
 var beerController = require('./controllers/beerController');
 var entiteController = require('./controllers/entiteController');
+var profilController = require('./controllers/profilController');
+var accessFonctionController = require('./controllers/accessFonctionController');
 var authController = require('./controllers/authController');
 
 router.route('/').get(mainController.index);
 
 router.route('/auth').post(authController.authenticate);
 
-// router.route('/beer/:beer_id').get(authController.isAuthenticated, beerController.getBeerById);
-// router.route('/beers').get(authController.isAuthenticated, beerController.getBeers);
-// router.route('/beer').post(authController.isAuthenticated, beerController.postBeer);
-// router.route('/beer/:beer_id').put(authController.isAuthenticated, beerController.putBeerQuantity);
-// router.route('/beer/:beer_id').delete(authController.isAuthenticated, beerController.deleteBeer);
-
 router.route('/entite').get(entiteController.getEntite);
 router.route('/entite').post(entiteController.postEntite);
+
+router.route('/profil').get(profilController.getProfil);
+router.route('/profil').post(profilController.postProfil);
+
+router.route('/access/fonction/all').get(accessFonctionController.getAccessFonction);
+router.route('/access/fonction').post(accessFonctionController.postAccessFonction);
 
 
 

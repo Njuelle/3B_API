@@ -1,6 +1,8 @@
-var jwt           = require('jsonwebtoken');
-var mongoose      = require('mongoose');
-var Entite          = require('../models/entite');
+var jwt            = require('jsonwebtoken');
+var mongoose       = require('mongoose');
+var Entite         = require('../models/entite');
+var Profil         = require('../models/profil');
+var AccessFonction = require('../models/accessFonction');
 
 mongoose.connect('mongodb://localhost:27017/3bdb');
 
@@ -41,30 +43,65 @@ module.exports = {
         try {
             return verifiedToken = jwt.verify(token, 'secret');
         } catch(err) {
+            // no need to show error here, only return false
             return false; 
         }
     },
 
-    isAuth: function(token) {
-        var verifiedToken = this.verifyToken(token);
+    isAuth: function(res, req, callback) {
+        //first, veify token
+        var self = this;
+        var verifiedToken = this.verifyToken(req.headers['x-access-token']);
         if (verifiedToken) {
-            var entite = this.getEntiteFromToken(verifiedToken);
-            if (entite) {
-                return true;
-            }
+            //Second, check user from token
+            Entite.findOne({ _id: verifiedToken._doc._id }, function (err, entite) {
+                if (err) return err;
+                //third, check access fonction
+                AccessFonction.findOne({ profil_id: entite.profil_id }, function (err, accessFonction) {
+                    if (err) return err;
+                    var isAuth = self.checkAuth(accessFonction, req);
+                    if (isAuth) {
+                        callback(res);
+                    }else{
+                        res.json({ success: false, message: 'Authentication failed.' });
+                    }
+                    
+                });
+
+            });
         }
-        return false;
+        
     },
 
-    getEntiteFromToken: function(verifiedToken) {
-        return Entite.findOne({ id: verifiedToken._doc._id }, function (err, entite) {
-            if (err) { 
-                throw err;
-            }
-            if (entite) { 
-                return entite;
-            }
-        });
+    checkAuth: function(accessFonction, req) {
+        switch(req.method) {
+            case 'GET':
+                if (accessFonction.read_permission) {
+                    return true;
+                }
+                break;
+            case 'POST':
+                if (accessFonction.create_permission) {
+                    return true;
+                }
+                break;
+            case 'PUT':
+                if (accessFonction.edit_permission) {
+                    return true;
+                }
+                break;
+            case 'DELETE':
+                if (accessFonction.delete_permission) {
+                    return true;
+                }
+                break; 
+            default:
+                return false
+                
+        }
+        return false;
     }
+
+
 }
 

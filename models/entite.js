@@ -13,6 +13,10 @@ var EntiteSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    profil_id: {
+        type: String,
+        required: true
     }
 });
 
