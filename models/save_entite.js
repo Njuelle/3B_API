@@ -1,8 +1,5 @@
 var EntiteSchema = new mongoose.Schema({
     header_db: [HeaderSchema],
-    profil_id: String,
-    username: String,
-    password: String,
       common: {
         image: Buffer,
         groupe: String,

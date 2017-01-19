@@ -14,7 +14,7 @@ var authController           = require('./controllers/authController');
 
 router.route('/').get(mainController.index);
 
-router.route('/auth').post(authController.authenticate);
+router.route('/auth').post(authController.getToken);
 
 // router.route('/entite').get(authentification.authentification, userController.getEntite);
 router.route('/user').get(userController.getUser);

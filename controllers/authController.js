@@ -3,8 +3,12 @@ var mongoose       = require('mongoose');
 var User         = require('../models/user');
 
 module.exports = {
-
-    authenticate : function(req, res) {
+    /**
+     * Generate token after check user and password
+     * @param  req {[request]}
+     * @param  res {[response]}
+     */
+    getToken : function(req, res) {
         User.findOne({ username: req.body.username }, function (err, user) {
             if (err) { 
                 res.json({ success: false, message: err });

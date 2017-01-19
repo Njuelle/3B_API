@@ -7,6 +7,15 @@ var jwt            = require('jsonwebtoken');
 
 module.exports = {
 
+
+    /**
+     * Main authentification middleware function
+     * for router, called before each routes function 
+     * 
+     * @param  req {[request]}
+     * @param  res {[response]}
+     * @param  callback {Function}
+     */
     authentification: function(req, res, callback){
         //no need authentification for /auth route
         if (req.path === '/auth') {
@@ -46,6 +55,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Verify token from request
+     * 
+     * @param  req {[request]}
+     * @param  res {[response]}
+     * @return decoded token
+     */
     verifyToken: function(req,res){
     	try {
             return jwt.verify(req.headers['x-access-token'], 'secret');
@@ -54,6 +70,13 @@ module.exports = {
         }
     },
 
+    /**
+     * check if AccesFonction authorize
+     * route and method from request
+     * @param  res {[request]}
+     * @param  {[AccessFunction]}
+     * @return {[boolean]}
+     */
     checkAuth: function(req, accessFonction) {
     	switch(req.method) {
     	    case 'GET':

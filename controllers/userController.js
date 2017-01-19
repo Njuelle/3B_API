@@ -29,9 +29,9 @@ module.exports = {
         });
     },
 
-    hashPassword : function(pass) {
+    hashPassword : function(password) {
         var salt = bcrypt.genSaltSync(5);
-        return bcrypt.hashSync(pass, salt);
+        return bcrypt.hashSync(password, salt);
     }
 
 }
