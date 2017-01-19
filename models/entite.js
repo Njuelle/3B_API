@@ -1,23 +1,52 @@
 // Load required packages
-var mongoose = require('mongoose');
-var bcrypt   = require('bcrypt-nodejs');
-var jwt      = require('jsonwebtoken');
+var mongoose     = require('mongoose');
+var bcrypt       = require('bcrypt-nodejs');
+var jwt          = require('jsonwebtoken');
+var HeaderSchema = require('./header');
 
 // Define our entite schema
 var EntiteSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        unique: true,
-        required: true
+    header_db: [HeaderSchema],
+    login: String,
+    password: String,
+    profil_id: String,
+    common: {
+        image: Buffer,
+        group: String
     },
-    password: {
-        type: String,
-        required: true
+    personne_moral: {
+        etat_civil: {
+            raison_sociale: String
+        },
+        activite: String,
+        lien_asso: String,
+        representant: String
     },
-    profil_id: {
-        type: String,
-        required: true
+    personne_physique: {
+        etat_civil: {
+            titre: String,
+            nom: String,
+            prenom: String,
+            aka: String,
+            sexe: String,
+            date_naissance: Date,
+            lieu_naissance: String,
+            dpt_naissance: String,
+            statut_marital: String
+        },
+        administration: {
+            date_entree: Date,
+            date_sortie: Date,
+            generation: Number,
+            fiche_rg_path: {
+                annee: Date,
+                file: Buffer
+            }
+        }
+        
+            
     }
+    
 });
 
 // Execute before each entite.save() call

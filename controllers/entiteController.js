@@ -19,14 +19,14 @@ module.exports = {
     },
 
     getEntite : function(req, res) {
-        authController.isAuth(res, req, function(res){
+        // authController.isAuth(res, req, function(res){
             Entite.find(function(err, entites) {
                 if (err){
                     res.send(err);
                 }
                 res.json(entites);
             });
-        });
+        // });
     }
 
 }
