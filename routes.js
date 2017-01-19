@@ -4,21 +4,21 @@ var authentification         = require("./middlewares/authentification");
 
 var mainController           = require('./controllers/mainController');
 var beerController           = require('./controllers/beerController');
-var entiteController         = require('./controllers/entiteController');
+var userController         = require('./controllers/userController');
 var profilController         = require('./controllers/profilController');
 var accessFonctionController = require('./controllers/accessFonctionController');
 var authController           = require('./controllers/authController');
 
 //use middleware
-router.use(authentification.authentification);
+// router.use(authentification.authentification);
 
 router.route('/').get(mainController.index);
 
 router.route('/auth').post(authController.authenticate);
 
-// router.route('/entite').get(authentification.authentification, entiteController.getEntite);
-router.route('/entite').get(entiteController.getEntite);
-router.route('/entite').post(entiteController.postEntite);
+// router.route('/entite').get(authentification.authentification, userController.getEntite);
+router.route('/user').get(userController.getUser);
+router.route('/user').post(userController.postUser);
 
 router.route('/profil').get(profilController.getProfil);
 router.route('/profil').post(profilController.postProfil);

@@ -1,33 +1,29 @@
 var jwt            = require('jsonwebtoken');
 var mongoose       = require('mongoose');
-var Entite         = require('../models/entite');
-var Profil         = require('../models/profil');
-var AccessFonction = require('../models/accessFonction');
-
-
+var User         = require('../models/user');
 
 module.exports = {
 
     authenticate : function(req, res) {
-        Entite.findOne({ username: req.body.username }, function (err, entite) {
+        User.findOne({ username: req.body.username }, function (err, user) {
             if (err) { 
-                throw err;
+                res.json({ success: false, message: err });
             }
-            // No entite found with that username
-            if (!entite) { 
-                res.json({ success: false, message: 'Authentication failed. Entite not found.' });
+            // No user found with that username
+            if (!user) { 
+                res.json({ success: false, message: 'Authentication failed. User not found.' });
             }
             // Make sure the password is correct
-            entite.verifyPassword(req.body.password, function(err, isMatch) {
+            user.verifyPassword(req.body.password, function(err, isMatch) {
                 if (err) { 
-                    throw err;
+                    res.json({ success: false, message: err });
                 }
                 // Password did not match
                 if (!isMatch) { 
                     res.json({ success: false, message: 'Authentication failed. Wrong password.' });
                 }
                 // Success
-                var token = jwt.sign(entite, 'secret', {
+                var token = jwt.sign(user, 'secret', {
                     expiresIn : 60*60*24
                 });
                 

@@ -1,5 +1,5 @@
 var mongoose       = require('mongoose');
-var Entite         = require('../models/entite');
+var User         = require('../models/user');
 var Profil         = require('../models/profil');
 var AccessFonction = require('../models/accessFonction');
 var jwt            = require('jsonwebtoken');
@@ -13,7 +13,7 @@ module.exports = {
             callback();
             return;
         }
-        
+
         var self = this;
     	var middlewares = require("./authentification");    
         
@@ -21,13 +21,13 @@ module.exports = {
         var verifiedToken = middlewares.verifyToken(req,res);
         if (verifiedToken) {
             //Second, check user from token
-            Entite.findOne({ _id: verifiedToken._doc._id }, function (err, entite) {
-                if (err  || !entite) {
+            User.findOne({ _id: verifiedToken._doc._id }, function (err, user) {
+                if (err  || !user) {
                 	res.json({ success: false, message: 'Authentication failed.' });
                  	return;
                 } 
                 //third, check access fonction
-                AccessFonction.findOne({ 'profil_id': entite.profil_id, 'method_name': req.path}, function (err, accessFonction) {
+                AccessFonction.findOne({ 'profil_id': user.profil_id, 'method_name': req.path}, function (err, accessFonction) {
                     if (err || !accessFonction) {
                         res.json({ success: false, message: 'No access for this method.' });
                         return;
