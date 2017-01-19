@@ -4,7 +4,7 @@ var Entite         = require('../models/entite');
 var Profil         = require('../models/profil');
 var AccessFonction = require('../models/accessFonction');
 
-mongoose.connect('mongodb://localhost:27017/3bdb');
+
 
 module.exports = {
 

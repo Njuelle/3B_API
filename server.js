@@ -2,6 +2,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var routes = require('./routes');
+var mongoose       = require('mongoose');
+
+// mongoose.connect('mongodb://localhost:27017/3bdb');
+mongoose.connect('mongodb://association3B:6^HJUC&D>c4^r_s@localhost:27017/3bdb');
 
 // Create our Express application
 var app = express();
