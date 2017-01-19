@@ -5,7 +5,7 @@ var routes = require('./routes');
 var mongoose       = require('mongoose');
 
 // mongoose.connect('mongodb://localhost:27017/3bdb');
-mongoose.connect('mongodb://localhost/test',{user: 'association3B', pass: '6^HJUC&D>c4^r_s)'},callback);
+mongoose.connect('mongodb://localhost:27017/3bdb',{user: 'association3B', pass: '6^HJUC&D>c4^r_s)'});
                  
                  
 
