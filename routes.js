@@ -1,13 +1,14 @@
-var express                  = require('express');
-var router                   = express.Router();
-var authentification         = require("./middlewares/authentification");
+var express                   = require('express');
+var router                    = express.Router();
+var authentification          = require("./middlewares/authentification");
 
-var mainController           = require('./controllers/mainController');
-var beerController           = require('./controllers/beerController');
-var userController         = require('./controllers/userController');
-var profilController         = require('./controllers/profilController');
+var mainController            = require('./controllers/mainController');
+var beerController            = require('./controllers/beerController');
+var userController            = require('./controllers/userController');
+var profilController          = require('./controllers/profilController');
 var permissionRouteController = require('./controllers/permissionRouteController');
-var authController           = require('./controllers/authController');
+var authController            = require('./controllers/authController');
+var testController            = require('./controllers/testController');
 
 //use middleware
 // router.use(authentification.authentification);
@@ -25,6 +26,18 @@ router.route('/profil').post(profilController.postProfil);
 
 router.route('/permissionRoute').get(permissionRouteController.getPermissionRoute);
 router.route('/permissionRoute').post(permissionRouteController.postPermissionRoute);
+
+
+///	TEST ROUTES ///
+router.route('/test').get(testController.getTest);
+router.route('/test').post(testController.postTest);
+router.route('/test').put(testController.putTest);
+router.route('/test').delete(testController.deleteTest);
+
+router.route('/test2').get(testController.getTest2);
+router.route('/test2').post(testController.postTest2);
+router.route('/test2').put(testController.putTest2);
+router.route('/test2').delete(testController.deleteTest2);
 
 
 
