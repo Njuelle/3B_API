@@ -10,7 +10,7 @@ var permissionRouteController = require('./controllers/permissionRouteController
 var authController           = require('./controllers/authController');
 
 //use middleware
-router.use(authentification.authentification);
+// router.use(authentification.authentification);
 
 router.route('/').get(mainController.index);
 
