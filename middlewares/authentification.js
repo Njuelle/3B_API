@@ -1,8 +1,8 @@
-var mongoose       = require('mongoose');
-var User         = require('../models/user');
-var Profil         = require('../models/profil');
-var AccessFonction = require('../models/accessFonction');
-var jwt            = require('jsonwebtoken');
+var mongoose        = require('mongoose');
+var User            = require('../models/user');
+var Profil          = require('../models/profil');
+var PermissionRoute = require('../models/permissionRoute');
+var jwt             = require('jsonwebtoken');
 
 
 module.exports = {
@@ -23,34 +23,40 @@ module.exports = {
             return;
         }
 
-        var self = this;
-    	var middlewares = require("./authentification");    
+    	var self = require("./authentification");     
         
-        //first, veify token
-        var verifiedToken = middlewares.verifyToken(req,res);
+        //first, verify token
+        var verifiedToken = self.verifyToken(req,res);
         if (verifiedToken) {
             //Second, check user from token
             User.findOne({ _id: verifiedToken._doc._id }, function (err, user) {
                 if (err  || !user) {
-                	res.json({ success: false, message: 'Authentication failed.' });
+                	res.json({ success: false, message: 'Authentication failed. No user founds' });
                  	return;
-                } 
-                //third, check access fonction
-                AccessFonction.findOne({ 'profil_id': user.profil_id, 'method_name': req.path}, function (err, accessFonction) {
-                    if (err || !accessFonction) {
-                        res.json({ success: false, message: 'No access for this method.' });
+                }
+                //get profils of current user
+                var listProfilId = self.getListProfilId(user);
+
+                Profil.find({'_id': { $in: listProfilId}}, function(err, profils){
+                    if (err  || !profils) {
+                        res.json({ success: false, message: 'Authentication failed. No profil founds' });
                         return;
                     }
-                    if (middlewares.checkAuth(req, accessFonction)) {
-                        callback();
-                    }else{
-                        res.json({ success: false, message: 'No access for this method.' });
-                        return;
-                    }
+                    listPermsId = self.getListPermId(profils);
+                    PermissionRoute.find({'_id': { $in: listPermsId}}, function(err, permissions){
+                        if (err  || !permissions) {
+                            res.json({ success: false, message: 'Authentication failed. No permission founds' });
+                            return;
+                        }
+                        if (self.checkIsAuth(permissions)){
+                            callback();
+                        }
+                    });
                 });
+               
             });
         } else {
-            res.json({ success: false, message: 'Authentication failed.' });
+            res.json({ success: false, message: 'Authentication failed. No token provided' });
             return;
         }
     },
@@ -70,39 +76,35 @@ module.exports = {
         }
     },
 
-    /**
-     * check if AccesFonction authorize
-     * route and method from request
-     * @param  res {[request]}
-     * @param  {[AccessFunction]}
-     * @return {[boolean]}
-     */
-    checkAuth: function(req, accessFonction) {
-    	switch(req.method) {
-    	    case 'GET':
-    	        if (accessFonction.read_permission) {
-    	            return true;
-    	        }
-    	        break;
-    	    case 'POST':
-    	        if (accessFonction.create_permission) {
-    	            return true;
-    	        }
-    	        break;
-    	    case 'PUT':
-    	        if (accessFonction.edit_permission) {
-    	            return true;
-    	        }
-    	        break;
-    	    case 'DELETE':
-    	        if (accessFonction.delete_permission) {
-    	            return true;
-    	        }
-    	        break; 
-    	    default:
-    	        return false;
-    	        
-    	}
-    }
+    getListProfilId: function(user) {
+        var listProfilId = Array();
+        user.profils.forEach(function(profil) { 
+            listProfilId.push(
+                mongoose.Types.ObjectId(profil.profil_id)
+            );
+        });
+        return listProfilId;
+    },
 
+    getListPermId: function(profils) {
+        listPermsId = Array();
+        profils.forEach(function(profil) { 
+            profil.permissions.forEach(function(perms) { 
+                listPermsId.push(
+                    mongoose.Types.ObjectId(perms.permission_id)
+                );     
+            });   
+        });
+        return listPermsId;
+    },
+
+    checkIsAuth: function(permissions) {
+        var isAuth = false;
+        permissions.forEach(function(permission) { 
+            if(permission.permission) {
+                isAuth = true;
+            }    
+        });
+        return isAuth;
+    }
 }

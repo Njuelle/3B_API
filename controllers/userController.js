@@ -6,32 +6,33 @@ var bcrypt       = require('bcrypt-nodejs');
 module.exports = {
     
     postUser : function(req, res) {
-        var controller = require('../controllers/userController');
+        var self = require('../controllers/userController');
         //first, hash password
         if (req.body.password){
-            req.body.password = controller.hashPassword(req.body.password);
+            req.body.password = self.hashPassword(req.body.password);
         }
         
-        User.collection.insert(req.body,function(err) {
+        // create user from json body request        
+        var user = new User(req.body);
+        user.save(function(err) {
             if (err){
                 res.send(err);
             }
-            res.json({ message: 'new user added' });
+            res.json({ message: 'new profil added' });
         });
     },
 
     getUser : function(req, res) {
-        User.find(function(err, entites) {
+        User.find(function(err, users) {
             if (err){
                 res.send(err);
             }
-            res.json(entites);
+            res.json(users);
         });
     },
 
     hashPassword : function(password) {
-        var salt = bcrypt.genSaltSync(5);
-        return bcrypt.hashSync(password, salt);
+        return bcrypt.hashSync(password);
     }
 
 }

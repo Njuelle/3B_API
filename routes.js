@@ -6,11 +6,11 @@ var mainController           = require('./controllers/mainController');
 var beerController           = require('./controllers/beerController');
 var userController         = require('./controllers/userController');
 var profilController         = require('./controllers/profilController');
-var accessFonctionController = require('./controllers/accessFonctionController');
+var permissionRouteController = require('./controllers/permissionRouteController');
 var authController           = require('./controllers/authController');
 
 //use middleware
-// router.use(authentification.authentification);
+router.use(authentification.authentification);
 
 router.route('/').get(mainController.index);
 
@@ -23,8 +23,8 @@ router.route('/user').post(userController.postUser);
 router.route('/profil').get(profilController.getProfil);
 router.route('/profil').post(profilController.postProfil);
 
-router.route('/access/fonction/all').get(accessFonctionController.getAccessFonction);
-router.route('/access/fonction').post(accessFonctionController.postAccessFonction);
+router.route('/permissionRoute').get(permissionRouteController.getPermissionRoute);
+router.route('/permissionRoute').post(permissionRouteController.postPermissionRoute);
 
 
 

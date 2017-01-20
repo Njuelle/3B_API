@@ -3,12 +3,12 @@ var mongoose = require('mongoose');
 var HeaderSchema = require('./header');
 
 // Define our beer schema
-var ProfilSchema = new mongoose.Schema({
+var PermissionRouteSchema = new mongoose.Schema({
 	header_db: [HeaderSchema],
-    name : String,
-    permissions: [{ permission_id : String }]
-    
+    route : String,
+    method : String,
+    permission : Boolean,
 });
 
 // Export the Mongoose model
-module.exports = mongoose.model('Profil', ProfilSchema);
+module.exports = mongoose.model('PermissionRoute', PermissionRouteSchema);
