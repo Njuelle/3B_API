@@ -1,7 +1,7 @@
 // Load required packages
-var User = require('../models/user');
-var authController = require('../controllers/authController');
-var bcrypt       = require('bcrypt-nodejs');
+var User             = require('../models/user');
+var headerController = require('../controllers/headerController');
+var bcrypt           = require('bcrypt-nodejs');
 
 module.exports = {
     
@@ -12,8 +12,9 @@ module.exports = {
             req.body.password = self.hashPassword(req.body.password);
         }
         
-        // create user from json body request        
-        var user = new User(req.body);
+        // create user from json object with db header        
+        var jsonObject = headerController.makeJsonObject(req.body);
+        var user = new User(jsonObject);
         user.save(function(err) {
             if (err){
                 res.send(err);
@@ -34,6 +35,5 @@ module.exports = {
     hashPassword : function(password) {
         return bcrypt.hashSync(password);
     }
-
 }
 

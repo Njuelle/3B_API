@@ -1,5 +1,5 @@
 var EntiteSchema = new mongoose.Schema({
-    header_db: [HeaderSchema],
+    header_db: HeaderSchema,
       common: {
         image: Buffer,
         groupe: String,

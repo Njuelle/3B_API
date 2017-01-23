@@ -6,7 +6,7 @@ var HeaderSchema = require('./header');
 
 // Define our user schema
 var UserSchema = new mongoose.Schema({
-    header_db: [HeaderSchema],
+    header_db: HeaderSchema,
     username: String,
     password: String,
     entite_id: String,

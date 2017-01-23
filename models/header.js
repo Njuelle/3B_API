@@ -12,7 +12,7 @@ var HeaderSchema = new mongoose.Schema({
 	owner     : String,
 	app       : String,
 	statut    : String,
-	entity_id : String
+	user_id   : String
 });
 
 module.exports = HeaderSchema;
