@@ -1,7 +1,9 @@
 // Load required packages
 var User             = require('../models/user');
 var headerController = require('../controllers/headerController');
+var crudController   = require('../controllers/crudController');
 var bcrypt           = require('bcrypt-nodejs');
+var mongoose         = require('mongoose');
 
 module.exports = {
     
@@ -17,10 +19,14 @@ module.exports = {
         var user = new User(jsonObject);
         user.save(function(err) {
             if (err){
-                res.send(err);
+                res.json({ success: false, message: err });
             }
             res.json({ message: 'new profil added' });
         });
+    },
+    
+    getUserById : function(req, res) {
+        crudController.getObjectById(User, req, res);
     },
 
     getUser : function(req, res) {
@@ -30,6 +36,14 @@ module.exports = {
             }
             res.json(users);
         });
+    },
+
+    putUser : function(req, res) {
+        crudController.putObject(User, req, res);
+    },
+
+    deleteUser : function(req, res) {
+        crudController.deleteObject(User, req, res);
     },
 
     hashPassword : function(password) {

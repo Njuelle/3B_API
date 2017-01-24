@@ -11,13 +11,14 @@ module.exports = {
      * @return Json
      */
     makeJsonObject : function(body) {
+        var uid = mongoose.Types.ObjectId();
         var header_db = {
-            uid : mongoose.Types.ObjectId(),
-            timestamp : Date.now(),
-            owner : '3B',
-            app : '3B',
-            statut : 'current',
-            user_id: '1'
+            uid         : uid,
+            timestamp   : Date.now(),
+            owner       : '3B',
+            app         : '3B',
+            statut      : 'current',
+            emetteur_id : '1'
         }
 
         var jsonArray = new Array();
@@ -46,7 +47,18 @@ module.exports = {
     changeToOldStatut : function(object){
         object.header_db.statut = "old";
         return object;
+    },
+
+    changeToCurrentStatut : function(object){
+        object.header_db.statut = "current";
+        return object;
+    },
+
+    updateTimeStamp : function(object){
+        object.header_db.timestamp = Date.now();
+        return object;
     }
+
 
 }
 

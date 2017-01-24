@@ -6,6 +6,7 @@ var User     = require('../models/user');
 module.exports = {
     /**
      * Generate token after check user and password
+     * 
      * @param  req {[request]}
      * @param  res {[response]}
      */

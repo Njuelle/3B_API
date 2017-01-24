@@ -29,27 +29,31 @@ module.exports = {
         var verifiedToken = self.verifyToken(req,res);
         if (verifiedToken) {
             //Second, check user from token
-            User.findOne({ _id: verifiedToken._doc._id }, function (err, user) {
+            User.findOne({ 'header_db.uid': verifiedToken._doc.header_db.uid }, function (err, user) {
                 if (err  || !user) {
                 	res.json({ success: false, message: 'Authentication failed. No user founds' });
                  	return;
                 }
+                
                 //get profils of current user
                 var listProfilId = self.getListProfilId(user);
 
-                Profil.find({'_id': { $in: listProfilId}}, function(err, profils){
+                Profil.find({'header_db.uid': { $in: listProfilId}}, function(err, profils){
                     if (err  || !profils) {
                         res.json({ success: false, message: 'Authentication failed. No profil founds' });
                         return;
                     }
+                    
                     listPermsId = self.getListPermId(profils);
-                    PermissionRoute.find({'_id': { $in: listPermsId}}, function(err, permissions){
+                    PermissionRoute.find({'header_db.uid': { $in: listPermsId}}, function(err, permissions){
                         if (err  || !permissions) {
                             res.json({ success: false, message: 'Authentication failed. No permission founds' });
                             return;
                         }
                         if (self.checkIsAuth(permissions)){
                             callback();
+                        } else {
+                            res.json({ success: false, message: 'Authentication failed. No authorisations founds' });
                         }
                     });
                 });

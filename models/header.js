@@ -2,17 +2,15 @@ var mongoose = require('mongoose');
 
 var HeaderSchema = new mongoose.Schema({
 	uid : {
-		type : String,
-		default : mongoose.Types.ObjectId()
+		type : mongoose.Schema.Types.ObjectId,
 	},
 	timestamp : { 
 		type: Date, 
-		default: Date.now
 	},
-	owner     : String,
-	app       : String,
-	statut    : String,
-	user_id   : String
+	owner       : String,
+	app         : String,
+	statut      : String,
+	emetteur_id : String,
 });
 
 module.exports = HeaderSchema;

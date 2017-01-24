@@ -18,11 +18,16 @@ router.route('/').get(mainController.index);
 router.route('/auth').post(authController.getToken);
 
 // router.route('/entite').get(authentification.authentification, userController.getEntite);
+router.route('/user/:uid').get(userController.getUserById);
 router.route('/user').get(userController.getUser);
 router.route('/user').post(userController.postUser);
+router.route('/user/:uid').put(userController.putUser);
+router.route('/user/:uid').delete(userController.deleteUser);
 
 router.route('/profil').get(profilController.getProfil);
+router.route('/profil/:uid').get(profilController.getProfilById);
 router.route('/profil').post(profilController.postProfil);
+router.route('/profil/:uid').put(profilController.putProfil);
 
 router.route('/permissionRoute').get(permissionRouteController.getPermissionRoute);
 router.route('/permissionRoute').post(permissionRouteController.postPermissionRoute);
