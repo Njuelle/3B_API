@@ -9,7 +9,7 @@ var UserSchema = new mongoose.Schema({
     header_db: HeaderSchema,
     username: String,
     password: String,
-    entite_id: Moo,
+    entite_id: String,
     profils: [{ profil_id : String }]
 });
 
