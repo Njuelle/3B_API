@@ -14,7 +14,7 @@ module.exports = {
     },
 
     getAllObjects : function(model, req, res) {
-        model.find({'header_db.statut' : 'current'}function(err, objects) {
+        model.find({'header_db.statut' : 'current'}, function(err, objects) {
             if (err){
                 res.send(err);
             }
