@@ -5,6 +5,10 @@ module.exports = {
     
     postObject : function(model, req, res) {
         var jsonObject = headerController.makeJsonObject(req);
+        if(jsonObject.success == false) {
+            res.json({ success: false, message: jsonObject.message });
+            return;
+        }
         model.collection.insert(jsonObject,function(err) {
             if (err){
                 res.json({ success: false, message: err });

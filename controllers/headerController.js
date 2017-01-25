@@ -12,9 +12,11 @@ module.exports = {
      */
     makeJsonObject : function(req) {
         var uid = mongoose.Types.ObjectId();
-        var ownerName = '3B';
         if (req.headers['owner']) {
-            ownerName = req.headers['owner'];
+            var ownerName = req.headers['owner'];
+        } else {
+            var err = { success: false, message: 'no owner provided' };
+            return err;
         }
         var header_db = {
             uid         : uid,
