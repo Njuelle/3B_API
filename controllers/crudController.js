@@ -9,7 +9,7 @@ module.exports = {
             if (err){
                 res.json({ success: false, message: err });
             }
-            res.json({ message: 'new object added' });
+            res.json({ success: true, id: jsonObject.header_db.uid });
         });
     },
 
