@@ -10,12 +10,16 @@ module.exports = {
      * @param  req.body Request.body
      * @return Json
      */
-    makeJsonObject : function(body) {
+    makeJsonObject : function(req) {
         var uid = mongoose.Types.ObjectId();
+        var ownerName = '3B';
+        if (req.headers['owner']) {
+            ownerName = req.headers['owner'];
+        }
         var header_db = {
             uid         : uid,
             timestamp   : Date.now(),
-            owner       : '3B',
+            owner       : ownerName,
             app         : '3B',
             statut      : 'current',
             emetteur_id : '1'
@@ -24,8 +28,8 @@ module.exports = {
         var jsonArray = new Array();
         jsonArray['header_db'] = header_db;
 
-        for (var value in body) {
-            jsonArray[value] = body[value];
+        for (var value in req.body) {
+            jsonArray[value] =req.body[value];
         }
         var json = Object.assign({}, jsonArray);
         return json;

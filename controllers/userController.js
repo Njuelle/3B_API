@@ -15,7 +15,7 @@ module.exports = {
         }
         
         // create user from json object with db header        
-        var jsonObject = headerController.makeJsonObject(req.body);
+        var jsonObject = headerController.makeJsonObject(req);
         var user = new User(jsonObject);
         user.save(function(err) {
             if (err){

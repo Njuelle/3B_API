@@ -4,7 +4,7 @@ var mongoose         = require('mongoose');
 module.exports = {
     
     postObject : function(model, req, res) {
-        var jsonObject = headerController.makeJsonObject(req.body);
+        var jsonObject = headerController.makeJsonObject(req);
         model.collection.insert(jsonObject,function(err) {
             if (err){
                 res.json({ success: false, message: err });
