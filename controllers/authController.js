@@ -18,6 +18,7 @@ module.exports = {
             }
             // No user found with that username
             if (!user) { 
+                res.status(401);
                 res.json({ success: false, message: 'Authentication failed. User not found.' });
             }
             // Make sure the password is correct
@@ -31,6 +32,7 @@ module.exports = {
                     token: token
                 });
             } else {
+                res.status(401);
                 res.json({ success: false, message: 'Authentication failed. Wrong password.' });
             }
         });    

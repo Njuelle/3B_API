@@ -31,6 +31,7 @@ module.exports = {
             //Second, check user from token
             User.findOne({ 'header_db.uid': verifiedToken._doc.header_db.uid }, function (err, user) {
                 if (err  || !user) {
+                    res.status(401);
                 	res.json({ success: false, message: 'Authentication failed. No user founds' });
                  	return;
                 }
@@ -40,6 +41,7 @@ module.exports = {
 
                 Profil.find({'header_db.uid': { $in: listProfilId}}, function(err, profils){
                     if (err  || !profils) {
+                        res.status(401);
                         res.json({ success: false, message: 'Authentication failed. No profil founds' });
                         return;
                     }
@@ -47,12 +49,14 @@ module.exports = {
                     listPermsId = self.getListPermId(profils);
                     PermissionRoute.find({'header_db.uid': { $in: listPermsId}}, function(err, permissions){
                         if (err  || !permissions) {
+                            res.status(401);
                             res.json({ success: false, message: 'Authentication failed. No permission founds' });
                             return;
                         }
                         if (self.checkIsAuth(permissions)){
                             callback();
                         } else {
+                            res.status(403);
                             res.json({ success: false, message: 'Authentication failed. No authorisations founds' });
                         }
                     });

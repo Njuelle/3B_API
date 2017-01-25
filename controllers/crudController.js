@@ -11,8 +11,10 @@ module.exports = {
         }
         model.collection.insert(jsonObject,function(err) {
             if (err){
+                res.status(400);
                 res.json({ success: false, message: err });
             }
+            res.status(201);
             res.json({ success: true, id: jsonObject.header_db.uid });
         });
     },
@@ -20,8 +22,10 @@ module.exports = {
     getAllObjects : function(model, req, res) {
         model.find({'header_db.statut' : 'current'}, function(err, objects) {
             if (err){
-                res.send(err);
+                res.status(400);
+                res.json({ success: false, message: err });
             }
+            res.status(200);
             res.json(objects);
         });
     },
@@ -30,11 +34,14 @@ module.exports = {
         var uid = req.params.uid;
         model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {
             if (err){
+                res.status(404);
                 res.json({ success: false, message: err });
             }
             if (object.length > 1) {
+                res.status(400);
                 res.json({ success: false, message: 'One object expected to find, but many was found' });   
             }
+            res.status(200);
             res.json(object);
         });
     },
@@ -43,12 +50,14 @@ module.exports = {
         var uid = req.params.uid;
         model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, function (err, object) {
             if (err  || !object) {
+                res.status(400);
                 res.json({ success: false, message: err });
                 return;
             }
             object = headerController.changeToOldStatut(object);
             object.save(function(err) {
                 if (err){
+                    res.status(400);
                     res.json({ success: false, message: err });
                 }
                 object = headerController.changeToCurrentStatut(object);
@@ -60,8 +69,10 @@ module.exports = {
                 
                 model.collection.insert(object, function(err) {
                     if (err){
+                        res.status(400);
                         res.json({ success: false, message: err });
                     }
+                    res.status(202);
                     res.json({ success: true, message: 'Modifications successful' });
                 });
             });
@@ -72,14 +83,17 @@ module.exports = {
         var uid = req.params.uid;
         model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, function (err, object) {
             if (err  || !object) {
+                res.status(400);
                 res.json({ success: false, message: err });
                 return;
             }
             object = headerController.changeToDeleteStatut(object);
             object.save(function(err) {
                 if (err){
+                    res.status(400);
                     res.json({ success: false, message: err });
                 }
+                res.status(200);
                 res.json({ success: true, message: 'Delete successful' });
             });
         });         

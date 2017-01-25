@@ -17,14 +17,17 @@ module.exports = {
         // create user from json object with db header        
         var jsonObject = headerController.makeJsonObject(req);
         if(jsonObject.success == false) {
+            res.status(400);
             res.json({ success: false, message: jsonObject.message });
             return;
         }
         var user = new User(jsonObject);
         user.save(function(err) {
             if (err){
+                res.status(400);
                 res.json({ success: false, message: err });
             }
+            res.status(201);
             res.json({ success: true, id: jsonObject.header_db.uid });
         });
     },
@@ -37,7 +40,9 @@ module.exports = {
         User.find(function(err, users) {
             if (err){
                 res.send(err);
+                res.status(404);
             }
+            res.status(200);
             res.json(users);
         });
     },
