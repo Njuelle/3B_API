@@ -24,9 +24,12 @@ module.exports = {
 
     getObjectById : function(model, req, res) {
         var uid = req.params.uid;
-        model.findOne({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {
+        model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {
             if (err){
                 res.json({ success: false, message: err });
+            }
+            if (object.length > 1) {
+                res.json({ success: false, message: 'One object expected to find, but many was found' });   
             }
             res.json(object);
         });
