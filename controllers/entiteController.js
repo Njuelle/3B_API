@@ -22,6 +22,14 @@ module.exports = {
 
     deleteEntite : function(req, res) {
         crudController.deleteObject(Entite, req, res);
-    }
+    },
+
+    getVoyagePersonnel : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'voyages_personels', req, res);
+    },
+
+    putVoyagePersonnel : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'voyages_personels', req, res);
+    },
 }
 
