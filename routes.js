@@ -36,6 +36,18 @@ router.route('/permissionRoute').post(permissionRouteController.postPermissionRo
 router.route('/permissionRoute/:uid').put(permissionRouteController.putPermissionRoute);
 router.route('/permissionRoute/:uid').delete(permissionRouteController.deletePermissionRoute);
 
+router.route('/menu').get(menuController.getMenu);
+router.route('/menu/:uid').get(menuController.getMenuById);
+router.route('/menu').post(menuController.postMenu);
+router.route('/menu/:uid').put(menuController.putMenu);
+router.route('/menu/:uid').delete(menuController.deleteMenu);
+
+router.route('/entite').get(entiteController.getEntite);
+router.route('/entite/:uid').get(entiteController.getEntiteById);
+router.route('/entite').post(entiteController.postEntite);
+router.route('/entite/:uid').put(entiteController.putEntite);
+router.route('/entite/:uid').delete(entiteController.deleteEntite);
+
 
 ///	TEST ROUTES ///
 router.route('/test').get(testController.getTest);
