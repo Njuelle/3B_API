@@ -19,5 +19,9 @@ module.exports = {
     putProfil : function(req, res) {
         crudController.putObject(Profil, req, res);
     }
+
+    deleteProfil : function(req, res) {
+        crudController.deleteObject(Profil, req, res);
+    }
 }
 

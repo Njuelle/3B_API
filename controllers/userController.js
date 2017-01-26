@@ -37,14 +37,7 @@ module.exports = {
     },
 
     getUser : function(req, res) {
-        User.find(function(err, users) {
-            if (err){
-                res.send(err);
-                res.status(404);
-            }
-            res.status(200);
-            res.json(users);
-        });
+        crudController.getObject(User, req, res);
     },
 
     putUser : function(req, res) {

@@ -5,12 +5,14 @@ var jwt          = require('jsonwebtoken');
 var HeaderSchema = require('./header');
 
 // Define our user schema
-var UserSchema = new mongoose.Schema({
+var User = new mongoose.Schema({
     header_db: HeaderSchema,
-    username: String,
-    password: String,
-    entite_id: String,
-    profils: [{ profil_id : String }]
+      username: {type: String, required: true},
+      password: {type: String, required: true},
+      entity_id: {type: mongoose.Schema.Types.ObjectId, required: true},
+      profils: [{
+        profil_id: {type: mongoose.Schema.Types.ObjectId, required: true}
+      }],
 });
 
 // Export the Mongoose model

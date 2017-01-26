@@ -28,11 +28,13 @@ router.route('/profil').get(profilController.getProfil);
 router.route('/profil/:uid').get(profilController.getProfilById);
 router.route('/profil').post(profilController.postProfil);
 router.route('/profil/:uid').put(profilController.putProfil);
+router.route('/profil/:uid').delete(profilController.deleteProfil);
 
 router.route('/permissionRoute').get(permissionRouteController.getPermissionRoute);
 router.route('/permissionRoute/:uid').get(permissionRouteController.getPermissionRouteById);
 router.route('/permissionRoute').post(permissionRouteController.postPermissionRoute);
 router.route('/permissionRoute/:uid').put(permissionRouteController.putPermissionRoute);
+router.route('/permissionRoute/:uid').delete(permissionRouteController.deletePermissionRoute);
 
 
 ///	TEST ROUTES ///
