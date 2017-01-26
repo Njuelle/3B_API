@@ -47,5 +47,13 @@ module.exports = {
     putCompetences : function(req, res) {
         crudController.putObjectSubDoc(Entite, 'competences', req, res);
     },
+
+    getCompetences : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'competences', req, res);
+    },
+
+    putCompetences : function(req, res) {
+        crudController.putObjectSubDoc(Entite, 'competences', req, res);
+    }
 }
 
