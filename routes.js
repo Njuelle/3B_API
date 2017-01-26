@@ -50,7 +50,9 @@ router.route('/entite').post(entiteController.postEntite);
 router.route('/entite/:uid').put(entiteController.putEntite);
 router.route('/entite/:uid').delete(entiteController.deleteEntite);
 router.route('/entite/:uid').get(entiteController.getVoyagePersonel);
-router.route('/entite/:uid').put(entiteController.getVoyagePersonel);
+router.route('/entite/:uid').put(entiteController.putVoyagePersonel);
+router.route('/entite/:uid').get(entiteController.getAutreAsso);
+router.route('/entite/:uid').put(entiteController.putAutreAsso);
 
 
 ///	TEST ROUTES ///

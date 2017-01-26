@@ -31,5 +31,13 @@ module.exports = {
     putVoyagePersonnel : function(req, res) {
         crudController.getObjectSubDoc(Entite, 'voyages_personels', req, res);
     },
+
+    getAutreAsso : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'autre_association', req, res);
+    },
+
+    putAutreAsso : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'autre_association', req, res);
+    },
 }
 
