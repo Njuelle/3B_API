@@ -63,5 +63,13 @@ module.exports = {
     putEtatCivil : function(req, res) {
         crudController.putObjectSubDoc(Entite, 'etat_civil', req, res);
     },
+
+    getContact : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'contact', req, res);
+    },
+
+    putContact : function(req, res) {
+        crudController.putObjectSubDoc(Entite, 'contact', req, res);
+    },
 }
 

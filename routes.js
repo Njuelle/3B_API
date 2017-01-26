@@ -59,6 +59,8 @@ router.route('/entite/:uid').get(entiteController.getAdresse);
 router.route('/entite/:uid').put(entiteController.putAdresse);
 router.route('/entite/:uid').get(entiteController.getEtatCivil);
 router.route('/entite/:uid').put(entiteController.putEtatCivil);
+router.route('/entite/:uid').get(entiteController.getContact);
+router.route('/entite/:uid').put(entiteController.putContact);
 
 
 ///	TEST ROUTES ///
