@@ -30,7 +30,9 @@ router.route('/profil').post(profilController.postProfil);
 router.route('/profil/:uid').put(profilController.putProfil);
 
 router.route('/permissionRoute').get(permissionRouteController.getPermissionRoute);
+router.route('/permissionRoute/:uid').get(permissionRouteController.getPermissionRouteById);
 router.route('/permissionRoute').post(permissionRouteController.postPermissionRoute);
+router.route('/permissionRoute/:uid').put(permissionRouteController.putPermissionRoute);
 
 
 ///	TEST ROUTES ///

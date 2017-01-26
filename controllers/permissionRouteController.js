@@ -5,18 +5,21 @@ var crudController  = require('../controllers/crudController');
 var mongoose        = require('mongoose');
 
 module.exports = {
+    
     postPermissionRoute : function(req, res) {
         crudController.postObject(PermissionRoute, req, res);
     },
 
     getPermissionRoute : function(req, res) {
-        PermissionRoute.find(function(err, accessFonctions) {
-            if (err){
-                res.send(err);
-            }
-            res.json(accessFonctions);
-        });
-    }
+        crudController.getAllObjects(PermissionRoute, req, res);
+    },
 
+    getPermissionRouteById : function(req, res) {
+        crudController.getObjectById(PermissionRoute, req, res);  
+    },
+
+    putPermissionRoute : function(req, res) {
+        crudController.putObject(PermissionRoute, req, res);
+    }
 }
 
