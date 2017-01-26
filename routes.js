@@ -55,6 +55,8 @@ router.route('/entite/:uid').get(entiteController.getAutreAsso);
 router.route('/entite/:uid').put(entiteController.putAutreAsso);
 router.route('/entite/:uid').get(entiteController.getCompetences);
 router.route('/entite/:uid').put(entiteController.putCompetences);
+router.route('/entite/:uid').get(entiteController.getAdresse);
+router.route('/entite/:uid').put(entiteController.putAdresse);
 
 
 ///	TEST ROUTES ///
