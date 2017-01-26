@@ -20,7 +20,7 @@ module.exports = {
 
     putPermissionRoute : function(req, res) {
         crudController.putObject(PermissionRoute, req, res);
-    }
+    },
 
     deletePermissionRoute : function(req, res) {
         crudController.deleteObject(PermissionRoute, req, res);

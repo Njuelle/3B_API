@@ -18,7 +18,7 @@ module.exports = {
 
     putMenu : function(req, res) {
         crudController.putObject(Menu, req, res);
-    }
+    },
 
     deleteMenu : function(req, res) {
         crudController.deleteObject(Menu, req, res);

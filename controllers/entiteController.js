@@ -18,7 +18,7 @@ module.exports = {
 
     putEntite : function(req, res) {
         crudController.putObject(Entite, req, res);
-    }
+    },
 
     deleteEntite : function(req, res) {
         crudController.deleteObject(Entite, req, res);

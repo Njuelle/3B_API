@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var HeaderSchema = require('./header');
 
 // Define our beer schema
-var Menu = new mongoose.Schema({
+var MenuSchema = new mongoose.Schema({
     header_db: HeaderSchema,
       nom: {type: String, required: true},
       display_rank: {type: Number, required: false},

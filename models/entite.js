@@ -3,19 +3,21 @@ var mongoose = require('mongoose');
 var HeaderSchema = require('./header');
 
 // Define our beer schema
-var EntiteMembre = new mongoose.Schema({
+var EntiteSchema = new mongoose.Schema({
     header_db: HeaderSchema,
       common: {
         image: {type: Object, required: false},
         groupe: {type: String, required: true},
-        entity_type: {type: String, enum { 'membre', 'non-membre', 'morale' }, required: true},
+        entity_type: {
+          type: String, 
+          enum: [ 'membre', 'non-membre', 'morale' ], required: true}
       },
       etat_civil: {
-        titre: {type: String, enum { 'M.', 'Mme', 'Melle' }, required: false},
+        titre: {type: String, enum:[ 'M.', 'Mme', 'Melle' ], required: false},
         raison_sociale: {type: String, required: false},
         nom: {type: String, required: false},
         prenom: {type: Array, required: false},
-        sexe: {type: String, enum { 'M', 'F' }, required: false},
+        sexe: {type: String, enum:[ 'M', 'F' ], required: false},
         date_naissance: {type: Date, required: false},
         lieu_naissance: {type: String, required: false},
         dpt_naissance: {type: String, required: false},
@@ -29,7 +31,7 @@ var EntiteMembre = new mongoose.Schema({
       adresse: {
         entete: {type: String, required: false},
         num: {type: Number, required: false},
-        ind_rept: {type: String, enum { 'Bis', 'Ter', 'Quater', 'Quinquies', 'Sexies', 'Septies', 'Octies', 'Novies', 'Decies'}, required: false},
+        ind_rept: {type: String, enum:[ 'Bis', 'Ter', 'Quater', 'Quinquies', 'Sexies', 'Septies', 'Octies', 'Novies', 'Decies'], required: false},
         voie: {type: String, uppercase: true, required: false},
         zipcode: {type: Number, required: false},
         ville: {type: String, uppercase: true, required: false},
@@ -102,11 +104,11 @@ var EntiteMembre = new mongoose.Schema({
         }],
         langues_vivantes:[{
           lv: {type: String, required: false},
-          niveau: {type: String, enum { 'Bilingue', 'Bon', 'Moyen', 'Notions' }, required: false}
+          niveau: {type: String, enum:[ 'Bilingue', 'Bon', 'Moyen', 'Notions' ], required: false}
         }],
         competences:[{
           designation: {type: String, required: false},
-          niveau: {type: String, enum { 'Bon', 'Moyen', 'Notions' }, required: false}
+          niveau: {type: String, enum:[ 'Bon', 'Moyen', 'Notions' ], required: false}
         }],
         autre_association:[{
           designation: {type: String, required: false},

@@ -5,7 +5,7 @@ var jwt          = require('jsonwebtoken');
 var HeaderSchema = require('./header');
 
 // Define our user schema
-var User = new mongoose.Schema({
+var UserSchema = new mongoose.Schema({
     header_db: HeaderSchema,
       username: {type: String, required: true},
       password: {type: String, required: true},

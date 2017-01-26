@@ -7,6 +7,8 @@ var beerController            = require('./controllers/beerController');
 var userController            = require('./controllers/userController');
 var profilController          = require('./controllers/profilController');
 var permissionRouteController = require('./controllers/permissionRouteController');
+var menuController            = require('./controllers/menuController');
+var entiteController            = require('./controllers/entiteController');
 var authController            = require('./controllers/authController');
 var testController            = require('./controllers/testController');
 

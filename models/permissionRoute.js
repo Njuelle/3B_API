@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var HeaderSchema = require('./header');
 
 // Define our beer schema
-var PermissionRoute = new mongoose.Schema({
+var PermissionRouteSchema = new mongoose.Schema({
     header_db: HeaderSchema,
       route: {type: String, required: true},
       method: {type: String, required: true},
