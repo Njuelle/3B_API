@@ -71,5 +71,14 @@ module.exports = {
     putContact : function(req, res) {
         crudController.putObjectSubDoc(Entite, 'contact', req, res);
     },
+
+    getRelationAsso : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'relation', req, res);
+    },
+
+    putRelationAsso : function(req, res) {
+        crudController.putObjectSubDoc(Entite, 'relation', req, res);
+    },
+
 }
 
