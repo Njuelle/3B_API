@@ -53,6 +53,8 @@ router.route('/entite/:uid').get(entiteController.getVoyagePersonel);
 router.route('/entite/:uid').put(entiteController.putVoyagePersonel);
 router.route('/entite/:uid').get(entiteController.getAutreAsso);
 router.route('/entite/:uid').put(entiteController.putAutreAsso);
+router.route('/entite/:uid').get(entiteController.getCompetences);
+router.route('/entite/:uid').put(entiteController.putCompetences);
 
 
 ///	TEST ROUTES ///

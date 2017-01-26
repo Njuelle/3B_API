@@ -29,7 +29,7 @@ module.exports = {
     },
 
     putVoyagePersonnel : function(req, res) {
-        crudController.getObjectSubDoc(Entite, 'voyages_personels', req, res);
+        crudController.putObjectSubDoc(Entite, 'voyages_personels', req, res);
     },
 
     getAutreAsso : function(req, res) {
@@ -37,7 +37,15 @@ module.exports = {
     },
 
     putAutreAsso : function(req, res) {
-        crudController.getObjectSubDoc(Entite, 'autre_association', req, res);
+        crudController.putObjectSubDoc(Entite, 'autre_association', req, res);
+    },
+
+    getCompetences : function(req, res) {
+        crudController.getObjectSubDoc(Entite, 'competences', req, res);
+    },
+
+    putCompetences : function(req, res) {
+        crudController.putObjectSubDoc(Entite, 'competences', req, res);
     },
 }
 
