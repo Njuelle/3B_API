@@ -62,9 +62,9 @@ module.exports = {
                 }
                 object = headerController.changeToCurrentStatut(object);
                 object._id = mongoose.Types.ObjectId();
-
+                    
                 for (var field in req.body) {
-                    object[field] = req.body[field];
+                    object[field] = req.body[field]; 
                 }
                 
                 model.collection.insert(object, function(err) {

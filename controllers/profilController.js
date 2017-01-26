@@ -1,5 +1,4 @@
 var Profil         = require('../models/profil');
-var authController = require('../controllers/authController');
 var mongoose       = require('mongoose');
 var crudController = require('../controllers/crudController');
 

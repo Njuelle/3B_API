@@ -6,8 +6,12 @@ var HeaderSchema = require('./header');
 var ProfilSchema = new mongoose.Schema({
 	header_db: HeaderSchema,
     name : String,
-    permissions: [{ permission_id : String }]
-    
+    permissions_routage: [{
+    	routage_id: {type: mongoose.Schema.Types.ObjectId, required: false}
+    }],
+    permissions_menu: [{
+        menu_id: {type: mongoose.Schema.Types.ObjectId, required: false}
+    }],
 });
 
 // Export the Mongoose model
