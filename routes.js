@@ -8,7 +8,8 @@ var userController            = require('./controllers/userController');
 var profilController          = require('./controllers/profilController');
 var permissionRouteController = require('./controllers/permissionRouteController');
 var menuController            = require('./controllers/menuController');
-var entiteController            = require('./controllers/entiteController');
+var userController            = require('./controllers/userController');
+var entiteController          = require('./controllers/entiteController');
 var authController            = require('./controllers/authController');
 var testController            = require('./controllers/testController');
 
@@ -20,6 +21,7 @@ router.route('/').get(mainController.index);
 router.route('/auth').post(authController.getToken);
 
 // router.route('/entite').get(authentification.authentification, userController.getEntite);
+router.route('/user/current').get(userController.getCurrentUser);
 router.route('/user/:uid').get(userController.getUserById);
 router.route('/user').get(userController.getUser);
 router.route('/user').post(userController.postUser);
@@ -28,21 +30,27 @@ router.route('/user/:uid').delete(userController.deleteUser);
 
 router.route('/profil').get(profilController.getProfil);
 router.route('/profil/:uid').get(profilController.getProfilById);
+router.route('/profil/user').get(profilController.getProfilCurrentUser);
+router.route('/profil/user/:uid').get(profilController.getProfilByUser);
 router.route('/profil').post(profilController.postProfil);
 router.route('/profil/:uid').put(profilController.putProfil);
 router.route('/profil/:uid').delete(profilController.deleteProfil);
 
-router.route('/permissionRoute').get(permissionRouteController.getPermissionRoute);
-router.route('/permissionRoute/:uid').get(permissionRouteController.getPermissionRouteById);
-router.route('/permissionRoute').post(permissionRouteController.postPermissionRoute);
-router.route('/permissionRoute/:uid').put(permissionRouteController.putPermissionRoute);
-router.route('/permissionRoute/:uid').delete(permissionRouteController.deletePermissionRoute);
+router.route('/route').get(permissionRouteController.getPermissionRoute);
+router.route('/route/:uid').get(permissionRouteController.getPermissionRouteById);
+router.route('/route/user').get(permissionRouteController.getPermissionRouteCurrentUser);
+router.route('/route/user/:uid').get(permissionRouteController.getPermissionRouteByUser);
+router.route('/route').post(permissionRouteController.postPermissionRoute);
+router.route('/route/:uid').put(permissionRouteController.putPermissionRoute);
+router.route('/route/:uid').delete(permissionRouteController.deletePermissionRoute);
 
-router.route('/menu').get(menuController.getMenu);
-router.route('/menu/:uid').get(menuController.getMenuById);
-router.route('/menu').post(menuController.postMenu);
-router.route('/menu/:uid').put(menuController.putMenu);
-router.route('/menu/:uid').delete(menuController.deleteMenu);
+router.route('/menus').get(menuController.getMenu);
+router.route('/menus/user').get(menuController.getMenuCurrentUser);
+router.route('/menus/user/:uid').get(menuController.getMenuByUser);
+router.route('/menus/:uid').get(menuController.getMenuById);
+router.route('/menus').post(menuController.postMenu);
+router.route('/menus/:uid').put(menuController.putMenu);
+router.route('/menus/:uid').delete(menuController.deleteMenu);
 
 router.route('/entite').get(entiteController.getEntite);
 router.route('/entite/:uid').get(entiteController.getEntiteById);

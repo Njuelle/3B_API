@@ -1,4 +1,5 @@
 var headerController = require('../controllers/headerController');
+var self             = require('../controllers/crudController');
 var mongoose         = require('mongoose');
 
 module.exports = {
@@ -36,13 +37,21 @@ module.exports = {
             if (err){
                 res.status(404);
                 res.json({ success: false, message: err });
+                return;
+            }
+
+            if(!object || object.length == 0) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });   
+                return;
             }
             if (object.length > 1) {
                 res.status(400);
-                res.json({ success: false, message: 'One object expected to find, but many was found' });   
+                res.json({ success: false, message: 'One object expected, but many was found' });   
+                return;
             }
             res.status(200);
-            res.json(object);
+            res.json(object[0]);
         });
     },
 
@@ -53,20 +62,52 @@ module.exports = {
                 res.status(404);
                 res.json({ success: false, message: err });
             }
+            if(!object || object.length == 0) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });   
+                return;
+            }
             if (object.length > 1) {
                 res.status(400);
-                res.json({ success: false, message: 'One object expected to find, but many was found' });   
+                res.json({ success: false, message: 'One object expected, but many was found' });   
             }
-            if (object[subDoc]) {
+            if (object[0][subDoc]) {
                 res.status(200);
-                res.json(object[subDoc]);    
+                res.json(object[0][subDoc]);    
             } else {
                 res.status(404);
                 res.json({ success: false, message: 'No sub-document found' });
             }            
             
         });
-    },    
+    },
+
+    getObjectChild : function(model, child, req, res) {
+        var uid = req.params.uid;
+        model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {
+            if (err){
+                res.status(404);
+                res.json({ success: false, message: err });
+            }
+            if (object.length > 1) {
+                res.status(400);
+                res.json({ success: false, message: 'One object expected, but many was found' });   
+            }
+            if(!object || object.length == 0) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });   
+                return;
+            }
+            var child = self.getProperty(object[0], child);
+            if (child) {
+                res.status(200);
+                res.json(child);
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'No sub-document found' });
+            }            
+        });
+    },
 
     putObject : function(model, req, res) {
         var uid = req.params.uid;
@@ -152,6 +193,15 @@ module.exports = {
                 res.json({ success: true, message: 'Delete successful' });
             });
         });         
+    },
+
+    getProperty : function(object, path) {
+        var props = path.split(".");
+        var obj = object;
+        for (var i = 0; i < props.length; i++) {
+            obj = obj[props[i]];
+        }
+        return obj;
     }
 
 

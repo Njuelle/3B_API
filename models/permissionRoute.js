@@ -7,7 +7,6 @@ var PermissionRouteSchema = new mongoose.Schema({
     header_db: HeaderSchema,
       route: {type: String, required: true},
       method: {type: String, required: true},
-      permission: {type: Boolean, required: true}
 });
 
 // Export the Mongoose model

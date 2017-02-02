@@ -11,6 +11,8 @@ module.exports = {
      * @param  res {[response]}
      */
     getToken : function(req, res) {
+        console.log(req.body.username);
+        console.log(req.body.password);
         var self = require('./authController');
         User.findOne({ username: req.body.username }, function (err, user) {
             if (err) { 
@@ -20,7 +22,9 @@ module.exports = {
             if (!user) { 
                 res.status(401);
                 res.json({ success: false, message: 'Authentication failed. User not found.' });
+                return;
             }
+            
             // Make sure the password is correct
             if (self.verifyPassword(req.body.password, user.password)){
                 var token = jwt.sign(user, 'secret', {
@@ -31,9 +35,11 @@ module.exports = {
                     success: true,
                     token: token
                 });
+                return;
             } else {
                 res.status(401);
                 res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+                return;
             }
         });    
     },

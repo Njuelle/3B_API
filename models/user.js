@@ -9,7 +9,7 @@ var UserSchema = new mongoose.Schema({
     header_db: HeaderSchema,
       username: {type: String, required: true},
       password: {type: String, required: true},
-      entity_id: {type: mongoose.Schema.Types.ObjectId, required: true},
+      // entity_id: {type: mongoose.Schema.Types.ObjectId, required: true},
       profils: [{
         profil_id: {type: mongoose.Schema.Types.ObjectId, required: true}
       }],

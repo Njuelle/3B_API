@@ -4,6 +4,7 @@ var headerController = require('../controllers/headerController');
 var crudController   = require('../controllers/crudController');
 var bcrypt           = require('bcrypt-nodejs');
 var mongoose         = require('mongoose');
+var jwt              = require('jsonwebtoken');
 
 module.exports = {
     
@@ -13,7 +14,6 @@ module.exports = {
         if (req.body.password){
             req.body.password = self.hashPassword(req.body.password);
         }
-        
         // create user from json object with db header        
         var jsonObject = headerController.makeJsonObject(req);
         if(jsonObject.success == false) {
@@ -37,7 +37,21 @@ module.exports = {
     },
 
     getUser : function(req, res) {
-        crudController.getObject(User, req, res);
+        crudController.getAllObjects(User, req, res);
+    },
+
+    getCurrentUser : function(req, res) {
+        var self = require('../controllers/userController');
+        var userId = self.getUserIdFromToken(req);
+        User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
+            if (err){
+                res.status(404);
+                res.json({ success: false, message: err });
+            }
+            user.password = undefined;
+            res.status(200);
+            res.json(user);
+        });
     },
 
     putUser : function(req, res) {
@@ -50,6 +64,11 @@ module.exports = {
 
     hashPassword : function(password) {
         return bcrypt.hashSync(password);
+    },
+
+    getUserIdFromToken : function(req) {
+        var verifiedToken = jwt.verify(req.headers['x-access-token'], 'secret');
+        return verifiedToken._doc.header_db.uid;
     }
 }
 
