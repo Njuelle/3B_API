@@ -43,15 +43,22 @@ module.exports = {
     getCurrentUser : function(req, res) {
         var self = require('../controllers/userController');
         var userId = self.getUserIdFromToken(req);
-        User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
-            if (err){
-                res.status(404);
-                res.json({ success: false, message: err });
-            }
-            user.password = undefined;
-            res.status(200);
-            res.json(user);
-        });
+        if (userId) {
+            User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
+                if (err){
+                    res.status(404);
+                    res.json({ success: false, message: err });
+                }
+                user.password = undefined;
+                res.status(200);
+                res.json(user);
+                return;
+            });    
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
     },
 
     putUser : function(req, res) {
@@ -67,7 +74,15 @@ module.exports = {
     },
 
     getUserIdFromToken : function(req) {
-        var verifiedToken = jwt.verify(req.headers['x-access-token'], 'secret');
+        if (!req.headers['x-access-token']){
+            return false;
+        }
+        try {
+            var verifiedToken = jwt.verify(req.headers['x-access-token'], 'secret');   
+        }
+        catch (e) {
+           return false;
+        }
         return verifiedToken._doc.header_db.uid;
     }
 }

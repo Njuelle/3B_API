@@ -39,7 +39,6 @@ module.exports = {
                 res.json({ success: false, message: err });
                 return;
             }
-
             if(!object || object.length == 0) {
                 res.status(404);
                 res.json({ success: false, message: 'Object not found' });   
