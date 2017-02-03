@@ -37,9 +37,9 @@ router.route('/profil/:uid').put(profilController.putProfil);
 router.route('/profil/:uid').delete(profilController.deleteProfil);
 
 router.route('/route').get(permissionRouteController.getPermissionRoute);
-router.route('/route/:uid').get(permissionRouteController.getPermissionRouteById);
 router.route('/route/user').get(permissionRouteController.getPermissionRouteCurrentUser);
 router.route('/route/user/:uid').get(permissionRouteController.getPermissionRouteByUser);
+router.route('/route/:uid').get(permissionRouteController.getPermissionRouteById);
 router.route('/route').post(permissionRouteController.postPermissionRoute);
 router.route('/route/:uid').put(permissionRouteController.putPermissionRoute);
 router.route('/route/:uid').delete(permissionRouteController.deletePermissionRoute);
