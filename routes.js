@@ -29,8 +29,8 @@ router.route('/user/:uid').put(userController.putUser);
 router.route('/user/:uid').delete(userController.deleteUser);
 
 router.route('/profil').get(profilController.getProfil);
-router.route('/profil/:uid').get(profilController.getProfilById);
 router.route('/profil/user').get(profilController.getProfilCurrentUser);
+router.route('/profil/:uid').get(profilController.getProfilById);
 router.route('/profil/user/:uid').get(profilController.getProfilByUser);
 router.route('/profil').post(profilController.postProfil);
 router.route('/profil/:uid').put(profilController.putProfil);

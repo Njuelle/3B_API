@@ -63,6 +63,11 @@ module.exports = {
     updateTimeStamp : function(object){
         object.header_db.timestamp = Date.now();
         return object;
+    },
+
+    changeOwner : function(object, owner) {
+        object.header_db.owner = owner;
+        return owner;
     }
 
 

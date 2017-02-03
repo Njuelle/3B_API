@@ -10,7 +10,8 @@ module.exports = {
             res.json({ success: false, message: jsonObject.message });
             return;
         }
-        model.collection.insert(jsonObject,function(err) {
+        var object = new model(jsonObject);
+        object.save(function(err) {
             if (err){
                 res.status(400);
                 res.json({ success: false, message: err });
@@ -122,13 +123,20 @@ module.exports = {
                     res.status(400);
                     res.json({ success: false, message: err });
                 }
+                if (req.headers['owner']) {
+                    object = headerController.changeOwner(object, owner);
+                } else {
+                    res.status(400);
+                    res.json({ success: false, message: 'no owner provided' });
+                    return ;
+                }
                 object = headerController.changeToCurrentStatut(object);
+                object = headerController.changeTimeStamp(object);
                 object._id = mongoose.Types.ObjectId();
                     
                 for (var field in req.body) {
                     object[field] = req.body[field]; 
                 }
-                
                 model.collection.insert(object, function(err) {
                     if (err){
                         res.status(400);
@@ -154,12 +162,21 @@ module.exports = {
                 if (err){
                     res.status(400);
                     res.json({ success: false, message: err });
+                    return;
+                }
+                if (req.headers['owner']) {
+                    object = headerController.changeOwner(object, owner);
+                } else {
+                    res.status(400);
+                    res.json({ success: false, message: 'no owner provided' });
+                    return ;
                 }
                 object = headerController.changeToCurrentStatut(object);
+                object = headerController.changeTimeStamp(object);
                 object._id = mongoose.Types.ObjectId();
                     
                 for (var field in req.body) {
-                    object[subDoc][field] = req.body[field]; 
+                    object[subDoc][field] = req.body[field];
                 }
                 
                 model.collection.insert(object, function(err) {
@@ -182,7 +199,16 @@ module.exports = {
                 res.json({ success: false, message: err });
                 return;
             }
+            if (req.headers['owner']) {
+                object = headerController.changeOwner(object, owner);
+            } else {
+                res.status(400);
+                res.json({ success: false, message: 'no owner provided' });
+                return ;
+            }
             object = headerController.changeToDeleteStatut(object);
+            object = headerController.changeTimeStamp(object);
+            object._id = mongoose.Types.ObjectId();
             object.save(function(err) {
                 if (err){
                     res.status(400);
