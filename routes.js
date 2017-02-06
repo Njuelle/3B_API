@@ -44,13 +44,13 @@ router.route('/route').post(permissionRouteController.postPermissionRoute);
 router.route('/route/:uid').put(permissionRouteController.putPermissionRoute);
 router.route('/route/:uid').delete(permissionRouteController.deletePermissionRoute);
 
-router.route('/menus').get(menuController.getMenu);
-router.route('/menus/user').get(menuController.getMenuCurrentUser);
-router.route('/menus/user/:uid').get(menuController.getMenuByUser);
-router.route('/menus/:uid').get(menuController.getMenuById);
-router.route('/menus').post(menuController.postMenu);
-router.route('/menus/:uid').put(menuController.putMenu);
-router.route('/menus/:uid').delete(menuController.deleteMenu);
+router.route('/menu').get(menuController.getMenu);
+router.route('/menu/user').get(menuController.getMenuCurrentUser);
+router.route('/menu/user/:uid').get(menuController.getMenuByUser);
+router.route('/menu/:uid').get(menuController.getMenuById);
+router.route('/menu').post(menuController.postMenu);
+router.route('/menu/:uid').put(menuController.putMenu);
+router.route('/menu/:uid').delete(menuController.deleteMenu);
 
 router.route('/entite').get(entiteController.getEntite);
 router.route('/entite/:uid').get(entiteController.getEntiteById);
