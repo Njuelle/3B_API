@@ -150,6 +150,7 @@ module.exports = {
 
     putGroupe : function(req, res) {
         crudController.putObjectChild(Entite, 'common.groupe', req, res);
+    }    
     
 }
 
