@@ -67,7 +67,7 @@ module.exports = {
 
     changeOwner : function(object, owner) {
         object.header_db.owner = owner;
-        return owner;
+        return object;
     }
 
 

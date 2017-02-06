@@ -9,7 +9,24 @@ var mongoose        = require('mongoose');
 module.exports = {
     
     postPermissionRoute : function(req, res) {
-        crudController.postObject(PermissionRoute, req, res);
+        PermissionRoute.findOne({
+                'route'  : req.route, 
+                'method' : req.method
+            },
+            function(err, perm) {
+                if (err) {
+                    res.status(404);
+                    res.json({ success: false, message: err });
+                    return;
+                }
+                if(!perm) {
+                    res.status(400);
+                    res.json({ success: false, message: 'duplicate route or method' });
+                    return;
+                } 
+                crudController.postObject(PermissionRoute, req, res);
+            }
+        );        
     },
 
     getPermissionRoute : function(req, res) {
@@ -24,9 +41,10 @@ module.exports = {
         var userId = userController.getUserIdFromToken(req);
         if (userId) {
             User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
-                if (err){
+                if (err) {
                     res.status(404);
                     res.json({ success: false, message: err });
+                    return;
                 }
                 if (!user) {
                     res.status(401);
@@ -58,9 +76,16 @@ module.exports = {
                             ); 
                         });    
                     });
-                    res.status(200);
-                    res.json(listRoutesId);
-                    return;
+                    PermissionRoute.find({'header_db.uid': { $in: listRoutesId}}, function(err, routes){
+                        if (err  || !routes) {
+                            res.status(401);
+                            res.json({ success: false, message: 'No routes founds' });
+                            return;
+                        }
+                        res.status(200);
+                        res.json(routes);
+                        return;
+                    });        
                 });
             });
         } else {
@@ -76,6 +101,7 @@ module.exports = {
             if (err){
                 res.status(404);
                 res.json({ success: false, message: err });
+                return;
             }
             var listProfilId = Array();
             user.profils.forEach(function(profil) { 
@@ -94,12 +120,19 @@ module.exports = {
                     profil.permissions_routage.forEach(function(perm) {
                         listRoutesId.push(
                             mongoose.Types.ObjectId(perm.routage_id)
-                        );
-                    });    
-                });
-                res.status(200);
-                res.json(listRoutesId);
-                return;
+                        );    
+                    });
+                }); 
+                PermissionRoute.find({'header_db.uid': { $in: listRoutesId}}, function(err, routes){
+                    if (err  || !routes) {
+                        res.status(401);
+                        res.json({ success: false, message: 'No routes founds' });
+                        return;
+                    }
+                    res.status(200);
+                    res.json(routes);
+                    return;
+                }); 
             });
         });
     },

@@ -124,14 +124,15 @@ module.exports = {
                     res.json({ success: false, message: err });
                 }
                 if (req.headers['owner']) {
-                    object = headerController.changeOwner(object, owner);
+                    object = headerController.changeOwner(object, req.headers['owner']);
                 } else {
                     res.status(400);
                     res.json({ success: false, message: 'no owner provided' });
-                    return ;
+                      return ;
                 }
+                console.log('object: ' + object);
                 object = headerController.changeToCurrentStatut(object);
-                object = headerController.changeTimeStamp(object);
+                object = headerController.updateTimeStamp(object);
                 object._id = mongoose.Types.ObjectId();
                     
                 for (var field in req.body) {
@@ -165,14 +166,14 @@ module.exports = {
                     return;
                 }
                 if (req.headers['owner']) {
-                    object = headerController.changeOwner(object, owner);
+                    object = headerController.changeOwner(object, req.headers['owner']);
                 } else {
                     res.status(400);
                     res.json({ success: false, message: 'no owner provided' });
                     return ;
                 }
                 object = headerController.changeToCurrentStatut(object);
-                object = headerController.changeTimeStamp(object);
+                object = headerController.updateTimeStamp(object);
                 object._id = mongoose.Types.ObjectId();
                     
                 for (var field in req.body) {
@@ -200,15 +201,14 @@ module.exports = {
                 return;
             }
             if (req.headers['owner']) {
-                object = headerController.changeOwner(object, owner);
+                object = headerController.changeOwner(object, req.headers['owner']);
             } else {
                 res.status(400);
                 res.json({ success: false, message: 'no owner provided' });
                 return ;
             }
             object = headerController.changeToDeleteStatut(object);
-            object = headerController.changeTimeStamp(object);
-            object._id = mongoose.Types.ObjectId();
+            object = headerController.updateTimeStamp(object);
             object.save(function(err) {
                 if (err){
                     res.status(400);
