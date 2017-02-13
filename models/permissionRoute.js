@@ -1,5 +1,6 @@
 // Load required packages
 var mongoose = require('mongoose');
+
 var HeaderSchema = require('./header');
 
 // Define our beer schema

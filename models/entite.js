@@ -12,15 +12,34 @@ var EntiteSchema = new mongoose.Schema({
           type: String, 
           enum: [ 'membre', 'non-membre', 'morale' ], required: true}
       },
-      etat_civil: {
+       etat_civil: {
         titre: {type: String, enum:[ 'M.', 'Mme', 'Melle' ], required: false},
-        raison_sociale: {type: String, required: false},
-        nom: {type: String, required: false},
-        prenom: {type: Array, required: false},
+        raison_sociale: {type: String, required: false, uppercase: true},
+        nom: {
+          type: String,
+          required: false,
+          uppercase: true,
+          match: [/^[a-zA-Zàâçéèêëîïôûùüÿñæœ]+$/, '"Nom" fields provided not valid']
+        },
+        prenom: [{
+          type: String, 
+          required: false, 
+          lowercase: true,
+          match: [/^[a-zA-Zàâçéèêëîïôûùüÿñæœ]+$/, '"Prenom" fields provided not valid']
+        }],
         sexe: {type: String, enum:[ 'M', 'F' ], required: false},
         date_naissance: {type: Date, required: false},
-        lieu_naissance: {type: String, required: false},
-        dpt_naissance: {type: String, required: false},
+        lieu_naissance: {
+          type: String,
+          required: false,
+          match: [/^[a-zA-Z'-]+$/, '"lieu_naissance" fields provided not valid'],
+          uppercase: true,
+        },
+        dpt_naissance: {
+          type: String,
+          required: false,
+          match: [/^[0-9]{2,3}$/, '"dpt_naissance" fields provided not valid']
+        },
         statut_marital: {type: String, required: false}
       },
       relation: {
@@ -32,7 +51,11 @@ var EntiteSchema = new mongoose.Schema({
         entete: {type: String, required: false},
         num: {type: Number, required: false},
         ind_rept: {type: String, enum:[ 'Bis', 'Ter', 'Quater', 'Quinquies', 'Sexies', 'Septies', 'Octies', 'Novies', 'Decies'], required: false},
-        voie: {type: String, uppercase: true, required: false},
+        voie: {
+          type: String,
+          required: false,
+          match: [/^[a-zA-Z'-]+$/, '"voie" fields provided not valid']
+        },
         zipcode: {type: Number, required: false},
         ville: {type: String, uppercase: true, required: false},
         pays: {type: String, uppercase: true, required: false}
@@ -40,7 +63,11 @@ var EntiteSchema = new mongoose.Schema({
       contact: {
         tel_fixe: {type: Number, required: false},
         tel_mobile: {type: Number, required: false},
-        email: {type: String, required: false}
+        email: {
+          type: String,
+          required: false,
+          match: [/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, '"email" fields provided not valid']
+        }
       },
       infos_asso: {
         aka: {type: String, required: false},
@@ -49,7 +76,11 @@ var EntiteSchema = new mongoose.Schema({
           date_sortie: {type: Date, required: false},
           generation: {type: Number, required: false},
           fiche_rg: {
-            annee: {type: Date, required: false},
+            annee: {
+              type: String,
+              required: false,
+              match: [/^[0-9]{4}$/, '"année" fields provided not valid']
+            },
             file: {type: Object, required: false}
           }
         },
@@ -74,7 +105,7 @@ var EntiteSchema = new mongoose.Schema({
             annee: {type: Date, required: false},
             designation: {type: String, required: false}
           }],
-          lateralite: {type: String, required: false},
+          lateralite: {type: String, required: false, enum:[ 'Gaucher', 'Droitier', 'Ambidextre' ]},
           contact_urgence: {
               id: {type: mongoose.Schema.Types.ObjectId, required: false},
               informations_a_transmettre: {type: String, required: false}

@@ -80,7 +80,6 @@ module.exports = {
                 res.status(404);
                 res.json({ success: false, message: 'No sub-document found' });
             }            
-            
         });
     },
 
@@ -260,6 +259,86 @@ module.exports = {
                 });
             });
         });     
+    },
+
+    putObjectChildCurrentUser : function(model, childPath, req, res, relationField) {
+        var emeteurId = headerController.getUserIdFromToken(req, res);
+        if (!emeteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+        var self = require('../controllers/crudController');
+        User.findOne({ 'header_db.uid': emeteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+            var relationId = Belt._get(user, relationField);
+            //find the object to update without _id
+            model.findOne({ 'header_db.uid': relationId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
+                if (err) {
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;
+                }
+                if (!object) {
+                    res.status(404);
+                    res.json({ success: false, message: 'Object not found' });
+                    return;
+                }
+                var child = Belt._get(object, childPath);
+                for (var key in child) {
+                    if(req.body[key]){
+                        child[key] = req.body[key];
+                    }
+                }
+                var object = Belt._set(object, childPath, child);
+                //create new object and change data
+                var jsonObject = self.createJsonObject(object, req.body);
+                var newObject = new model(object);
+                newObject.header_db.emeteur_id = emeteurId;
+                newObject = headerController.updateTimeStamp(newObject);
+                //validate the new object
+                newObject.validate(function(err) {
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+
+                    model.collection.insert(newObject, function(err){
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;       
+                        }
+                        // new object has been added to DB,
+                        // now change statut to old object :
+                        // first : need to find again the old object...
+                        model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                            if (err) {
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            if (!object) {
+                                res.status(404);
+                                res.json({ success: false, message: 'Object not found' });
+                                return;
+                            }
+                            object = headerController.changeToOldStatut(object);
+                            //finnaly save old object
+                            object.save(function(err) {
+                                if (err){
+                                    res.status(400);
+                                    res.json({ success: false, message: err });
+                                    return;
+                                }
+                                res.status(202);
+                                res.json({ success: true, message: 'Modifications successful' });
+                            });
+                        });
+                    });
+                });
+            });     
+        });
     },
 
     putObjectSubDoc : function(model, subDoc, req, res) {

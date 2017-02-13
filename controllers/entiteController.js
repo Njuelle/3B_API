@@ -1,8 +1,9 @@
-var Entite         = require('../models/entite');
-var User           = require('../models/user');
-var mongoose       = require('mongoose');
-var crudController = require('../controllers/crudController');
-var userController = require('../controllers/userController');
+var Entite           = require('../models/entite');
+var User             = require('../models/user');
+var mongoose         = require('mongoose');
+var crudController   = require('../controllers/crudController');
+var userController   = require('../controllers/userController');
+var headerController = require('../controllers/headerController');
 
 
 module.exports = {
@@ -35,6 +36,26 @@ module.exports = {
         crudController.putObjectChild(Entite, 'infos_asso.voyages_personels', req, res);
     },
 
+    getVoyagePersonnelCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.voyages_personels');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putVoyagePersonnelCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.voyages_personels', req, res, 'entity_id');
+    },
+
     getAutreAsso : function(req, res) {
         crudController.getObjectChild(Entite, 'infos_asso.autre_association', req, res);
     },
@@ -43,12 +64,52 @@ module.exports = {
         crudController.putObjectChild(Entite, 'infos_asso.autre_association', req, res);
     },
 
+    getAutreAssoCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.autre_association');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putAutreAssoCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.autre_association', req, res, 'entity_id');
+    },
+
     getCompetences : function(req, res) {
         crudController.getObjectChild(Entite, 'infos_asso.competences', req, res);
     },
 
     putCompetences : function(req, res) {
         crudController.putObjectChild(Entite, 'infos_asso.competences', req, res);
+    },
+
+    getCompetencesCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.competences');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putCompetencesCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.competences', req, res, 'entity_id');
     },
 
     getContact : function(req, res) {
@@ -92,9 +153,21 @@ module.exports = {
     },
 
     putEtatCivilCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'etat_civil', req, res, 'entity_id');
+    },
+
+    getContact : function(req, res) {
+        crudController.getObjectChild(Entite, 'contact', req, res);
+    },
+
+    putContact : function(req, res) {
+        crudController.putObjectChild(Entite, 'contact', req, res);
+    },
+
+    getContactCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
         self.getEntiteFromCurrentUser(req, function(entite){
-            var value = self.getProperty(entite, 'etat_civil');
+            var value = self.getProperty(entite, 'contact');
             if (value) {
                 res.status(200);
                 res.json(value);
@@ -107,12 +180,8 @@ module.exports = {
         });
     },
 
-    getContact : function(req, res) {
-        crudController.getObjectChild(Entite, 'contact', req, res);
-    },
-
-    putContact : function(req, res) {
-        crudController.putObjectChild(Entite, 'contact', req, res);
+    putContactCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'contact', req, res, 'contact');
     },
 
     getRelationAsso : function(req, res) {
@@ -131,12 +200,52 @@ module.exports = {
         crudController.putObjectChild(Entite, 'infos_asso.administration', req, res);
     },
 
+    getAdministrationCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.administration');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putAdministrationCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.administration', req, res, 'entity_id');
+    },
+
     getMobilite : function(req, res) {
         crudController.getObjectChild(Entite, 'infos_asso.mobilite', req, res);
     },
 
     putMobilite : function(req, res) {
         crudController.putObjectChild(Entite, 'infos_asso.mobilite', req, res);
+    },
+
+    getMobiliteCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.mobilite');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putMobiliteCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.mobilite', req, res, 'entity_id');
     },
 
     getSanitaire : function(req, res) {
@@ -147,12 +256,52 @@ module.exports = {
         crudController.putObjectChild(Entite, 'infos_asso.sanitaire', req, res);
     },
 
+    getSanitaireCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.sanitaire');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putSanitaireCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.sanitaire', req, res, 'entity_id');
+    },
+
     getPere : function(req, res) {
         crudController.getObjectChild(Entite, 'infos_asso.parents.pere', req, res);
     },
 
     putPere : function(req, res) {
         crudController.putObjectChild(Entite, 'infos_asso.parents.pere', req, res);
+    },
+
+    getPereCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.parents.pere');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putPereCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.parents.pere', req, res, 'entity_id');
     },
 
     getMere : function(req, res) {
@@ -163,12 +312,52 @@ module.exports = {
         crudController.putObjectChild(Entite, 'infos_asso.parents.mere', req, res);
     },
 
+    getMereCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.parents.mere');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putMereCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.parents.mere', req, res, 'entoty_id');
+    },
+
     getRepLegal : function(req, res) {
         crudController.getObjectChild(Entite, 'infos_asso.parents.responsable_legal_autre', req, res);
     },
 
     putRepLegal : function(req, res) {
         crudController.putObjectChild(Entite, 'infos_asso.parents.responsable_legal_autre', req, res);
+    },
+
+    getRepLegalCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.parents.responsable_legal_autre');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putRepLegalCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.parents.responsable_legal_autre', req, res, 'entity_id');
     },
 
     getScolarite : function(req, res) {
@@ -179,12 +368,52 @@ module.exports = {
         crudController.putObjectChild(Entite, 'infos_asso.scolarite', req, res);
     },
 
+    getScolariteCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.scolarite');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putScolariteCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.scolarite', req, res, 'entity_id');
+    },
+
     getLangueVivante : function(req, res) {
         crudController.getObjectChild(Entite, 'infos_asso.langues_vivantes', req, res);
     },
 
     putLangueVivante : function(req, res) {
         crudController.putObjectChild(Entite, 'infos_asso.langues_vivantes', req, res);
+    },
+
+    getLangueVivanteCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.langues_vivantes');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putLangueVivanteCurrentUser : function(req, res) {
+        crudController.putObjectChildCurrentUser(Entite, 'infos_asso.langues_vivantes', req, res, 'entity_id');
     },
 
     getGroupe : function(req, res) {

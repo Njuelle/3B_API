@@ -9,7 +9,11 @@ var MenuSchema = new mongoose.Schema({
       display_rank: {type: Number, required: false},
       dominant_id: {type: mongoose.Schema.Types.ObjectId, required: true},
       image: {type: Object, required: false},
-      path: {type: String, required: true}
+      path: {
+      	type: String,
+      	required: true,
+      	match: [/^[/][a-z/]{1,500}$/, '"Path" fields provided not valid']
+      }
 });
 // Export the Mongoose model
 module.exports = mongoose.model('Menu', MenuSchema);

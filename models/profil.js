@@ -5,7 +5,12 @@ var HeaderSchema = require('./header');
 // Define our beer schema
 var ProfilSchema = new mongoose.Schema({
 	header_db: HeaderSchema,
-    name : {type: String, required : true, unique : true},
+    name : {
+    	type: String,
+    	required : true,
+    	unique : true,
+        lowercase: true
+    },
     permissions_routage: [{
     	routage_id: {type: mongoose.Schema.Types.ObjectId, required: false}
     }],
