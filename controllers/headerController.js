@@ -1,6 +1,6 @@
-var header = require('../models/header');
+var header  = require('../models/header');
 var mongoose = require('mongoose');
-
+var jwt      = require('jsonwebtoken');
 module.exports = {
 
     /**
@@ -12,16 +12,9 @@ module.exports = {
      */
     makeJsonObject : function(req) {
         var uid = mongoose.Types.ObjectId();
-        if (req.headers['owner']) {
-            var ownerName = req.headers['owner'];
-        } else {
-            var err = { success: false, message: 'no owner provided' };
-            return err;
-        }
         var header_db = {
             uid         : uid,
             timestamp   : Date.now(),
-            owner       : ownerName,
             app         : '3B',
             statut      : 'current',
             emetteur_id : '1'
@@ -51,7 +44,7 @@ module.exports = {
     },
 
     changeToOldStatut : function(object){
-        object.header_db.statut = "old";
+         object.header_db.statut = "old";
         return object;
     },
 
@@ -65,10 +58,14 @@ module.exports = {
         return object;
     },
 
-    changeOwner : function(object, owner) {
-        object.header_db.owner = owner;
-        return object;
-    }
+    getUserIdFromToken : function(req,res){
+        try {
+            var verifiedToken = jwt.verify(req.headers['x-access-token'], 'secret');
+            return verifiedToken._doc.header_db.uid;
+        } catch(err) {
+            return false;
+        }
+    },
 
 
 }

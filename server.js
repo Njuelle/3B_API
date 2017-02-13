@@ -1,4 +1,5 @@
 // Get the packages we need
+require('events').EventEmitter.defaultMaxListeners = 0
 var express = require('express');
 var bodyParser = require('body-parser');
 var routes = require('./routes');

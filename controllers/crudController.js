@@ -1,9 +1,11 @@
 var headerController = require('../controllers/headerController');
+var userController   = require('../controllers/userController');
 var self             = require('../controllers/crudController');
 var mongoose         = require('mongoose');
+var User             = require('../models/user');
+var Belt             = require('jsbelt');
 
 module.exports = {
-    
     postObject : function(model, req, res) {
         var jsonObject = headerController.makeJsonObject(req);
         if(jsonObject.success == false) {
@@ -111,40 +113,150 @@ module.exports = {
 
     putObject : function(model, req, res) {
         var uid = req.params.uid;
-        model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, function (err, object) {
-            if (err  || !object) {
+        var self = require('../controllers/crudController');
+        //find the object to update without _id
+        model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
+            if (err) {
                 res.status(400);
                 res.json({ success: false, message: err });
                 return;
             }
-            object = headerController.changeToOldStatut(object);
-            object.save(function(err) {
-                if (err){
+            if (!object) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            //create new object and change data
+            var jsonObject = self.createJsonObject(object, req.body);
+            var newObject = new model(jsonObject);
+            //update emeteur ID and timestamp
+            var emeteurId = headerController.getUserIdFromToken(req, res);
+            if (!emeteurId) {
+                res.status(400);
+                res.json({ success: false, message: 'Invalid token' });
+                return;
+            }
+            newObject.header_db.emeteur_id = emeteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
+                    // console.log(newObject);
                     res.status(400);
                     res.json({ success: false, message: err });
+                    return;       
                 }
-                if (req.headers['owner']) {
-                    object = headerController.changeOwner(object, req.headers['owner']);
-                } else {
-                    res.status(400);
-                    res.json({ success: false, message: 'no owner provided' });
-                      return ;
-                }
-                console.log('object: ' + object);
-                object = headerController.changeToCurrentStatut(object);
-                object = headerController.updateTimeStamp(object);
-                object._id = mongoose.Types.ObjectId();
-                    
-                for (var field in req.body) {
-                    object[field] = req.body[field]; 
-                }
-                model.collection.insert(object, function(err) {
-                    if (err){
+
+                model.collection.insert(newObject, function(err){
+                    if (err) {
                         res.status(400);
                         res.json({ success: false, message: err });
+                        return;       
                     }
-                    res.status(202);
-                    res.json({ success: true, message: 'Modifications successful' });
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Modifications successful' });
+                        });
+                    });
+                });
+            });
+        });     
+    },
+
+    putObjectChild : function(model, childPath, req, res) {
+        var uid = req.params.uid;
+        var self = require('../controllers/crudController');
+        //find the object to update without _id
+        model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
+            if (err) {
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if (!object) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            var child = Belt._get(object, childPath);
+            for (var key in child) {
+                if(req.body[key]){
+                    child[key] = req.body[key];
+                }
+            }
+            var object = Belt._set(object, childPath, child);
+            //create new object and change data
+            var jsonObject = self.createJsonObject(object, req.body);
+            var newObject = new model(object);
+            var emeteurId = headerController.getUserIdFromToken(req, res);
+            if (!emeteurId) {
+                res.status(400);
+                res.json({ success: false, message: 'Invalid token' });
+                return;
+            }
+            newObject.header_db.emeteur_id = emeteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;       
+                }
+
+                model.collection.insert(newObject, function(err){
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Modifications successful' });
+                        });
+                    });
                 });
             });
         });     
@@ -164,13 +276,6 @@ module.exports = {
                     res.status(400);
                     res.json({ success: false, message: err });
                     return;
-                }
-                if (req.headers['owner']) {
-                    object = headerController.changeOwner(object, req.headers['owner']);
-                } else {
-                    res.status(400);
-                    res.json({ success: false, message: 'no owner provided' });
-                    return ;
                 }
                 object = headerController.changeToCurrentStatut(object);
                 object = headerController.updateTimeStamp(object);
@@ -200,13 +305,6 @@ module.exports = {
                 res.json({ success: false, message: err });
                 return;
             }
-            if (req.headers['owner']) {
-                object = headerController.changeOwner(object, req.headers['owner']);
-            } else {
-                res.status(400);
-                res.json({ success: false, message: 'no owner provided' });
-                return ;
-            }
             object = headerController.changeToDeleteStatut(object);
             object = headerController.updateTimeStamp(object);
             object.save(function(err) {
@@ -227,9 +325,20 @@ module.exports = {
             obj = obj[props[i]];
         }
         return obj;
+    },
+
+    createJsonObject: function(object, newDatas) {
+        var jsonArray = new Array();
+        for (var key in object) {
+            if(newDatas[key]){
+                jsonArray[key] = newDatas[key];
+            } else {
+                jsonArray[key] = object[key];
+            }
+        }
+        var jsonObject = Object.assign({}, jsonArray);
+        jsonObject['_id'] = mongoose.Types.ObjectId();
+        return jsonObject;
     }
 
-
-
-   
 }

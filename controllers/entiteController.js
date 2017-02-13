@@ -1,6 +1,9 @@
 var Entite         = require('../models/entite');
+var User           = require('../models/user');
 var mongoose       = require('mongoose');
 var crudController = require('../controllers/crudController');
+var userController = require('../controllers/userController');
+
 
 module.exports = {
     
@@ -48,6 +51,14 @@ module.exports = {
         crudController.putObjectChild(Entite, 'infos_asso.competences', req, res);
     },
 
+    getContact : function(req, res) {
+        crudController.getObjectChild(Entite, 'contact', req, res);
+    },
+
+    putContact : function(req, res) {
+        crudController.putObjectChild(Entite, 'contact', req, res);
+    },
+
     getAdresse : function(req, res) {
         crudController.getObjectChild(Entite, 'adresse', req, res);
     },
@@ -62,6 +73,38 @@ module.exports = {
 
     putEtatCivil : function(req, res) {
         crudController.putObjectChild(Entite, 'etat_civil', req, res);
+    },
+
+    getEtatCivilCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'etat_civil');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putEtatCivilCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'etat_civil');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
     },
 
     getContact : function(req, res) {
@@ -150,7 +193,52 @@ module.exports = {
 
     putGroupe : function(req, res) {
         crudController.putObjectChild(Entite, 'common.groupe', req, res);
-    }    
+    },
+
+    getEntiteFromCurrentUser : function(req, callback) {
+        var userId = userController.getUserIdFromToken(req);
+        if (userId) {
+            User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
+                if (err){
+                    res.status(404);
+                    res.json({ success: false, message: err });
+                    return;
+                }
+                if (!user) {
+                    res.status(400);
+                    res.json({ success: false, message: 'Invalid token' });
+                    return;        
+                }
+                Entite.findOne({'header_db.uid' : user.entity_id, 'header_db.statut' : 'current'}, function(err, entite) {
+                    if (err){
+                        res.status(404);
+                        res.json({ success: false, message: err });
+                        return;
+                    }
+                    if (!entite) {
+                        res.status(400);
+                        res.json({ success: false, message: 'No Entite found for this user' });
+                        return;
+                    }
+                    callback(entite);
+                    return;
+                }); 
+            });    
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+    },
+
+    getProperty : function(object, path) {
+        var props = path.split(".");
+        var obj = object;
+        for (var i = 0; i < props.length; i++) {
+            obj = obj[props[i]];
+        }
+        return obj;
+    } 
     
 }
 

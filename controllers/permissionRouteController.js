@@ -1,4 +1,4 @@
-// Load required packages
+ // Load required packages
 var PermissionRoute = require('../models/permissionRoute');
 var User            = require('../models/user');
 var Profil          = require('../models/profil');
@@ -10,8 +10,8 @@ module.exports = {
     
     postPermissionRoute : function(req, res) {
         PermissionRoute.findOne({
-                'route'  : req.route, 
-                'method' : req.method
+                'route'  : req.body.route, 
+                'method' : req.body.method
             },
             function(err, perm) {
                 if (err) {
@@ -19,11 +19,11 @@ module.exports = {
                     res.json({ success: false, message: err });
                     return;
                 }
-                if(!perm) {
+                if(perm) {
                     res.status(400);
                     res.json({ success: false, message: 'duplicate route or method' });
                     return;
-                } 
+                }
                 crudController.postObject(PermissionRoute, req, res);
             }
         );        
