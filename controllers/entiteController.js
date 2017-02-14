@@ -12,6 +12,36 @@ module.exports = {
         crudController.postObject(Entite, req, res);
     },
 
+    postMembre : function(req, res) {
+        var self = require('../controllers/entiteController');
+        if (self.checkIsMembre(req)){
+            crudController.postObject(Entite, req, res);    
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Entite is not Membre' });
+        }
+    },
+
+    postNonMembre : function(req, res) {
+        var self = require('../controllers/entiteController');
+        if (self.checkIsNonMembre(req)){
+            crudController.postObject(Entite, req, res);    
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Entite is not Non-Membre' });
+        }
+    },
+
+    postPersonneMorale : function(req, res) {
+        var self = require('../controllers/entiteController');
+        if (self.checkIsMorale(req)){
+            crudController.postObject(Entite, req, res);    
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Entite is not Personne-Morale' });
+        }
+    },
+
     getEntite : function(req, res) {
         crudController.getAllObjects(Entite, req, res);
     },
@@ -34,6 +64,50 @@ module.exports = {
 
     putVoyagePersonnel : function(req, res) {
         crudController.putObjectChild(Entite, 'infos_asso.voyages_personels', req, res);
+    },
+
+    getMembres : function(req, res) {
+        Entite.find({'header_db.statut' : 'current', 'common.entity_type' : 'membre'}, function(err, objects) {
+            if (err){
+                res.status(400);
+                res.json({ success: false, message: err });
+            }
+            res.status(200);
+            res.json(objects);
+        });
+    },
+
+    getOthers : function(req, res) {
+        Entite.find({'header_db.statut' : 'current', 'common.entity_type': {'$ne':'membre' }}, function(err, objects) {
+            if (err){
+                res.status(400);
+                res.json({ success: false, message: err });
+            }
+            res.status(200);
+            res.json(objects);
+        });
+    },
+
+    getContactUrgence : function(req, res) {
+        var uid = req.params.uid;
+        Entite.find({'header_db.statut' : 'current', 'header_db.uid' : uid}, function(err, entite) {
+            if (err){
+                res.status(400);
+                res.json({ success: false, message: err });
+            }
+
+            var contactId = entite.sanitaire.contact_urgence;
+            Entite.find({'header_db.statut' : 'current', 'header_db.uid' : contactId}, function(err, contact) {
+                var jsonArray        = new Array();
+                jsonArray['nom']     = contact.etat_civil.nom;
+                jsonArray['prenom']  = contact.etat_civil.prenom;
+                jsonArray['contact'] = contact.contact;
+                var jsonObject = Object.assign({}, jsonArray);
+                res.status(200);
+                res.json(jsonObject);
+                return;
+            });
+        });
     },
 
     getVoyagePersonnelCurrentUser : function(req, res) {
@@ -467,7 +541,76 @@ module.exports = {
             obj = obj[props[i]];
         }
         return obj;
-    } 
+    },
+
+    checkIsMembre : function(req) {
+        var isMembre = true;
+        if(req.body.common.entity_type != 'membre') {
+            isMembre = false;
+        }
+        if(req.body.etat_civil.raison_sociale) {
+            isMembre = false
+        }
+        if(req.body.relation) {
+            isMembre = false
+        }
+        return isMembre;
+    },
+
+    checkIsNonMembre : function(req) {
+        var isNonMembre = true;
+        if(req.body.common.entity_type != 'non-membre') {
+            isNonMembre = false;
+        }
+        if(req.body.etat_civil.raison_sociale) {
+            isNonMembre = false;
+        }
+        if(req.body.relation.activite) {
+            isNonMembre = false;
+        }
+        if(req.body.relation.representant_id) {
+            isNonMembre = false;
+        }
+        if(req.body.infos_asso) {
+            isNonMembre = false;
+        }
+        return isNonMembre;
+    },
+
+    checkIsMorale : function(req) {
+        var isMorale = true;
+        if(req.body.common.entity_type != 'morale') {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.titre) {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.nom) {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.prenom) {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.sexe) {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.date_naissance) {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.lieu_naissance) {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.dpt_naissance) {
+            isMorale = false;
+        }
+        if(req.body.etat_civil.statut_marital) {
+            isMorale = false;
+        }
+        if(req.body.infos_asso) {
+            isMorale = false;
+        }
+        return isMorale;
+    }
     
 }
 
