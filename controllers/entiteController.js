@@ -12,6 +12,10 @@ module.exports = {
         crudController.postObject(Entite, req, res);
     },
 
+    postAvatar : function(req, res) {
+        console.log(req.files);
+    },
+
     postMembre : function(req, res) {
         var self = require('../controllers/entiteController');
         if (self.checkIsMembre(req)){

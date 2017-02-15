@@ -8,6 +8,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
     "express": "~4.1.1",
+    "express-fileupload": "0.0.7",
     "jsonwebtoken": "^7.2.1",
     "mongoose": "^4.6.5"
   },

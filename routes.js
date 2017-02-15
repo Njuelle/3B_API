@@ -13,8 +13,13 @@ var entiteController          = require('./controllers/entiteController');
 var authController            = require('./controllers/authController');
 var testController            = require('./controllers/testController');
 
+var fileUpload = require('express-fileupload');
+
 //use middleware
 // router.use(authentification.authentification);
+router.use(fileUpload());
+
+router.route('/entite/avatar/:uid').post(entiteController.postAvatar);
 
 router.route('/').get(mainController.index);
 
