@@ -19,7 +19,7 @@ var fileUpload = require('express-fileupload');
 // router.use(authentification.authentification);
 router.use(fileUpload());
 
-router.route('/entite/avatar/:uid').post(entiteController.postAvatar);
+
 
 router.route('/').get(mainController.index);
 
@@ -59,6 +59,11 @@ router.route('/menu/:uid').delete(menuController.deleteMenu);
 
 
 router.route('/entite/sanitaire/contact_urgence/:uid').get(entiteController.getContactUrgence);
+router.route('/entite/avatar/user').put(entiteController.putAvatarCurrentUser);
+router.route('/entite/avatar/:uid').put(entiteController.putAvatar);
+router.route('/entite/avatar/user').get(entiteController.getAvatarCurrentUser);
+router.route('/entite/avatar/:uid').get(entiteController.getAvatar);
+router.route('/entite/baselog/user').get(entiteController.getBaselog);
 router.route('/entite/membres').get(entiteController.getMembres);
 router.route('/entite/others').get(entiteController.getOthers);
 router.route('/entite/membre').post(entiteController.postMembre);
@@ -122,6 +127,11 @@ router.route('/entite/lv/user').get(entiteController.getLangueVivanteCurrentUser
 router.route('/entite/lv/user').put(entiteController.putLangueVivanteCurrentUser);
 router.route('/entite/lv/:uid').get(entiteController.getLangueVivante);
 router.route('/entite/lv/:uid').put(entiteController.putLangueVivante);
+router.route('/entite/fiche_rg/user').get(entiteController.getFichesCurrentUser);
+router.route('/entite/fiche_rg/:uid').get(entiteController.getFiches);
+router.route('/entite/fiche_rg/user/:year').get(entiteController.getFicheCurrentUser);
+router.route('/entite/fiche_rg/:uid/:year').get(entiteController.getFiche);
+
 router.route('/entite/groupe/:uid').get(entiteController.getGroupe);
 router.route('/entite/groupe/:uid').put(entiteController.putGroupe);
 router.route('/entite').get(entiteController.getEntite);

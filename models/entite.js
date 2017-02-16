@@ -6,7 +6,7 @@ var HeaderSchema = require('./header');
 var EntiteSchema = new mongoose.Schema({
     header_db: HeaderSchema,
       common: {
-        image: {type: Object, required: false},
+        image: {type: String, required: false},
         groupe: {type: String, required: true},
         entity_type: {
           type: String, 
@@ -14,7 +14,12 @@ var EntiteSchema = new mongoose.Schema({
       },
        etat_civil: {
         titre: {type: String, enum:[ 'M.', 'Mme', 'Melle' ], required: false},
-        raison_sociale: {type: String, required: false, uppercase: true},
+        entreprise: {
+          raison_sociale: {type: String, required: false, uppercase: true},  
+          SIREN: {type: String, required: false},  
+          SIRET: {type: String, required: false},  
+          forme_juridique: {type: String, required: false, uppercase: true}  
+        },
         nom: {
           type: String,
           required: false,
@@ -75,14 +80,14 @@ var EntiteSchema = new mongoose.Schema({
           date_entree: {type: Date, required: false},
           date_sortie: {type: Date, required: false},
           generation: {type: Number, required: false},
-          fiche_rg: {
+          fiche_rg: [{
             annee: {
               type: String,
               required: false,
               match: [/^[0-9]{4}$/, '"année" fields provided not valid']
             },
-            file: {type: Object, required: false}
-          }
+            file: {type: String, required: false}
+          }]
         },
         mobilite: {
           date_permis_de_conduire: {type: Date, required: false},

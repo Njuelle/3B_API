@@ -4,6 +4,7 @@ var mongoose         = require('mongoose');
 var crudController   = require('../controllers/crudController');
 var userController   = require('../controllers/userController');
 var headerController = require('../controllers/headerController');
+var mime             = require('mime-types');
 
 
 module.exports = {
@@ -12,8 +13,142 @@ module.exports = {
         crudController.postObject(Entite, req, res);
     },
 
-    postAvatar : function(req, res) {
-        console.log(req.files);
+    getBaselog : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var jsonArray = new Array();
+            jsonArray['nom'] = entite.etat_civil.nom;
+            jsonArray['prenom'] = entite.etat_civil.prenom;
+            jsonArray['aka'] = entite.infos_asso.aka;
+            var jsonObject = Object.assign({}, jsonArray);
+            res.status(200);
+            res.json(jsonObject);
+        });
+    },    
+
+    getAvatarCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            if(entite.common.image) {
+                res.sendFile('/uploads/' + entite.common.image);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'No avatar for this Entite' });
+                return;   
+            }
+        });
+    },
+
+    getAvatar : function(req, res) {
+        Entite.findOne({'header_db.uid' : req.params.uid, 'header_db.statut' : 'current'}, function(err, entite) {
+            if (err){
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if(entite.common.image) {
+                res.sendFile('/uploads/' + entite.common.image);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'No avatar for this Entite' });
+                return;   
+            }
+        });
+    },
+
+    putAvatarCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        if (!req.files.file) {
+            res.status(400);
+            res.send('No files were uploaded.');
+            return;
+        }
+        var file = req.files.file;
+        var ext = file.name.slice(-4);
+        if (ext != '.jpg') {
+            if(ext != '.png') {
+                if(file.mimetype != mime.lookup('.jpg')){
+                    if(file.mimetype != mime.lookup('.png')){
+                        res.status(400);
+                        res.send('file extension incorrect');
+                        return;
+                    }
+                }
+            }
+        }
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var mimeExt = mime.extension(file.mimetype);
+            var nameId = mongoose.Types.ObjectId();
+            var fileName = nameId + '.' + mimeExt;
+            file.mv('./uploads/' + fileName, function(err){
+                if(err){
+                    res.status(500);
+                    res.send('Error uploading file');
+                    return;
+                }
+                entite.common.image = fileName;
+                entite.save(function(err) {
+                    if (err){
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                    }
+                    res.status(200);
+                    res.json({ success: true, message: 'avatar upload successful' });
+                    return;
+                });
+            });      
+        });
+    },
+
+    putAvatar : function(req, res) {
+        if (!req.files.file) {
+            res.status(400);
+            res.send('No files were uploaded.');
+            return;
+        }
+        var file = req.files.file;
+        var ext = file.name.slice(-4);
+        if (ext != '.jpg') {
+            if(ext != '.png') {
+                if(file.mimetype != mime.lookup('.jpg')){
+                    if(file.mimetype != mime.lookup('.png')){
+                        res.status(400);
+                        res.send('file extension incorrect');
+                        return;
+                    }
+                }
+            }
+        }
+        Entite.findOne({'header_db.uid' : req.params.uid, 'header_db.statut' : 'current'}, function(err, entite) {
+            if (err){
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            var mimeExt = mime.extension(file.mimetype);
+            var nameId = mongoose.Types.ObjectId();
+            var fileName = nameId + '.' + mimeExt;
+            file.mv('./uploads/' + fileName, function(err){
+                if(err){
+                    res.status(500);
+                    res.send('Error uploading file');
+                    return;
+                }
+                entite.common.image = fileName;
+                entite.save(function(err) {
+                    if (err){
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                    }
+                    res.status(201);
+                    res.json({ success: true, message: 'avatar upload successful' });
+                    return;
+                });
+            });      
+        });
+        
     },
 
     postMembre : function(req, res) {
@@ -69,6 +204,138 @@ module.exports = {
     putVoyagePersonnel : function(req, res) {
         crudController.putObjectChild(Entite, 'infos_asso.voyages_personels', req, res);
     },
+
+    getFiche : function(req, res) {
+        Entite.findOne({'header_db.uid' : req.params.uid, 'header_db.statut' : 'current'}, function(err, entite) {
+            if (err){
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            for (var i = 0; i < entite.infos_asso.fiche_rg.length; i++) {
+                if(entite.infos_asso.fiche_rg[i].annee == req.params.year) {
+                    res.sendFile('/uploads/' + entite.infos_asso.fiche_rg[i].file);
+                    return;
+                }
+            }
+            //here, no year found
+            res.status(404);
+            res.json({ success: false, message: 'No fiche_rg for this year, for this Entite' });
+            return; 
+
+        });
+    },
+
+    getFicheCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            for (var i = 0; i < entite.infos_asso.fiche_rg.length; i++) {
+                if(entite.infos_asso.fiche_rg[i].annee == req.params.year) {
+                    res.sendFile('/uploads/' + entite.infos_asso.fiche_rg[i].file);
+                    return;
+                }
+            }
+            //here, no year found
+            res.status(404);
+            res.json({ success: false, message: 'No fiche_rg for this year, for this Entite' });
+            return; 
+        });
+    },
+
+    getFiches : function(req, res) {
+        crudController.getObjectChild(Entite, 'infos_asso.fiche_rg', req, res);
+    },
+
+    getFichesCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var value = self.getProperty(entite, 'infos_asso.fiche_rg');
+            if (value) {
+                res.status(200);
+                res.json(value);
+                return;
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'Value not found' });
+                return;
+            }
+        });
+    },
+
+    putFiche : function(req, res) {
+        if (!req.files.file) {
+            res.status(400);
+            res.send('No files were uploaded.');
+            return;
+        }
+        var file = req.files.file;
+        Entite.findOne({'header_db.uid' : req.params.uid, 'header_db.statut' : 'current'}, function(err, entite) {
+            if (err){
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            var mimeExt = mime.extension(file.mimetype);
+            var nameId = mongoose.Types.ObjectId();
+            var fileName = nameId + '.' + mimeExt;
+            file.mv('./uploads/' + fileName, function(err){
+                if(err){
+                    res.status(500);
+                    res.send('Error uploading file');
+                    return;
+                }
+                entite.infos_asso.fiche_rg.push({
+                    annee: req.params.year,
+                    file: fileName
+                });
+                entite.save(function(err) {
+                    if (err){
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                    }
+                    res.status(201);
+                    res.json({ success: true, message: 'Fiche RG upload successful' });
+                    return;
+                });
+            });      
+        });
+    },
+
+    putFicheCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        if (!req.files.file) {
+            res.status(400);
+            res.send('No files were uploaded.');
+            return;
+        }
+        var file = req.files.file;
+        self.getEntiteFromCurrentUser(req, function(entite){
+            var mimeExt = mime.extension(file.mimetype);
+            var nameId = mongoose.Types.ObjectId();
+            var fileName = nameId + '.' + mimeExt;
+            file.mv('./uploads/' + fileName, function(err){
+                if(err){
+                    res.status(500);
+                    res.send('Error uploading file');
+                    return;
+                }
+                entite.infos_asso.fiche_rg.push({
+                    annee: req.params.year,
+                    file: fileName
+                });
+                entite.save(function(err) {
+                    if (err){
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                    }
+                    res.status(201);
+                    res.json({ success: true, message: 'Fiche RG upload successful' });
+                    return;
+                });
+            });      
+        });
+    },
+
 
     getMembres : function(req, res) {
         Entite.find({'header_db.statut' : 'current', 'common.entity_type' : 'membre'}, function(err, objects) {
