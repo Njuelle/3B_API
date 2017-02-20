@@ -135,7 +135,6 @@ router.route('/entite/groupe/:uid').get(entiteController.getGroupe);
 router.route('/entite/groupe/:uid').put(entiteController.putGroupe);
 router.route('/entite').get(entiteController.getEntite);
 router.route('/entite/:uid').get(entiteController.getEntiteById);
-router.route('/entite').post(entiteController.postEntite);
 router.route('/entite/:uid').put(entiteController.putEntite);
 router.route('/entite/:uid').delete(entiteController.deleteEntite);
 

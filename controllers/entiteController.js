@@ -55,6 +55,8 @@ module.exports = {
 
     putAvatarCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+
         if (!req.files.file) {
             res.status(400);
             res.send('No files were uploaded.');
@@ -90,6 +92,9 @@ module.exports = {
     },
 
     putAvatar : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         if (!req.files.file) {
             res.status(400);
             res.send('No files were uploaded.');
@@ -169,6 +174,9 @@ module.exports = {
     },
 
     putEntite : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObject(Entite, req, res);
     },
 
@@ -181,6 +189,9 @@ module.exports = {
     },
 
     putVoyagePersonnel : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.voyages_personels', req, res);
     },
 
@@ -242,6 +253,9 @@ module.exports = {
     },
 
     putFiche : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         if (!req.files.file) {
             res.status(400);
             res.send('No files were uploaded.');
@@ -276,6 +290,9 @@ module.exports = {
 
     putFicheCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
+
         if (!req.files.file) {
             res.status(400);
             res.send('No files were uploaded.');
@@ -364,6 +381,9 @@ module.exports = {
     },
 
     putVoyagePersonnelCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.voyages_personels', req, res, 'entity_id');
     },
 
@@ -372,6 +392,9 @@ module.exports = {
     },
 
     putAutreAsso : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.autre_association', req, res);
     },
 
@@ -392,6 +415,9 @@ module.exports = {
     },
 
     putAutreAssoCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.autre_association', req, res, 'entity_id');
     },
 
@@ -400,6 +426,9 @@ module.exports = {
     },
 
     putCompetences : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.competences', req, res);
     },
 
@@ -420,6 +449,9 @@ module.exports = {
     },
 
     putCompetencesCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.competences', req, res, 'entity_id');
     },
 
@@ -428,6 +460,9 @@ module.exports = {
     },
 
     putContact : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'contact', req, res);
     },
 
@@ -436,6 +471,9 @@ module.exports = {
     },
 
     putAdresse : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'adresse', req, res);
     },
 
@@ -444,6 +482,9 @@ module.exports = {
     },
 
     putEtatCivil : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+
         crudController.putObjectChild(Entite, 'etat_civil', req, res);
     },
 
@@ -464,6 +505,9 @@ module.exports = {
     },
 
     putEtatCivilCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'etat_civil', req, res, 'entity_id');
     },
 
@@ -472,6 +516,9 @@ module.exports = {
     },
 
     putContact : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'contact', req, res);
     },
 
@@ -492,6 +539,9 @@ module.exports = {
     },
 
     putContactCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'contact', req, res, 'contact');
     },
 
@@ -500,6 +550,9 @@ module.exports = {
     },
 
     putRelationAsso : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'relation', req, res);
     },
 
@@ -508,6 +561,9 @@ module.exports = {
     },
 
     putAdministration : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.administration', req, res);
     },
 
@@ -528,6 +584,9 @@ module.exports = {
     },
 
     putAdministrationCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.administration', req, res, 'entity_id');
     },
 
@@ -536,6 +595,9 @@ module.exports = {
     },
 
     putMobilite : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.mobilite', req, res);
     },
 
@@ -556,6 +618,9 @@ module.exports = {
     },
 
     putMobiliteCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.mobilite', req, res, 'entity_id');
     },
 
@@ -564,6 +629,9 @@ module.exports = {
     },
 
     putSanitaire : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.sanitaire', req, res);
     },
 
@@ -584,6 +652,9 @@ module.exports = {
     },
 
     putSanitaireCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.sanitaire', req, res, 'entity_id');
     },
 
@@ -592,6 +663,9 @@ module.exports = {
     },
 
     putPere : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.parents.pere', req, res);
     },
 
@@ -612,6 +686,9 @@ module.exports = {
     },
 
     putPereCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.parents.pere', req, res, 'entity_id');
     },
 
@@ -620,6 +697,9 @@ module.exports = {
     },
 
     putMere : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.parents.mere', req, res);
     },
 
@@ -640,6 +720,9 @@ module.exports = {
     },
 
     putMereCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.parents.mere', req, res, 'entoty_id');
     },
 
@@ -648,6 +731,9 @@ module.exports = {
     },
 
     putRepLegal : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.parents.responsable_legal_autre', req, res);
     },
 
@@ -668,6 +754,9 @@ module.exports = {
     },
 
     putRepLegalCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.parents.responsable_legal_autre', req, res, 'entity_id');
     },
 
@@ -676,6 +765,9 @@ module.exports = {
     },
 
     putScolarite : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.scolarite', req, res);
     },
 
@@ -696,6 +788,9 @@ module.exports = {
     },
 
     putScolariteCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.scolarite', req, res, 'entity_id');
     },
 
@@ -704,6 +799,9 @@ module.exports = {
     },
 
     putLangueVivante : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'infos_asso.langues_vivantes', req, res);
     },
 
@@ -724,6 +822,9 @@ module.exports = {
     },
 
     putLangueVivanteCurrentUser : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChildCurrentUser(Entite, 'infos_asso.langues_vivantes', req, res, 'entity_id');
     },
 
@@ -732,6 +833,9 @@ module.exports = {
     },
 
     putGroupe : function(req, res) {
+        var self = require('../controllers/entiteController');
+        self.checkEntity(req,res);
+        
         crudController.putObjectChild(Entite, 'common.groupe', req, res);
     },
 
@@ -781,72 +885,123 @@ module.exports = {
     },
 
     checkIsMembre : function(req) {
-        var isMembre = true;
-        if(req.body.common.entity_type != 'membre') {
-            isMembre = false;
+        try {
+            var isMembre = true;
+            if (req.method == 'POST') {
+                if(req.body.common.entity_type != 'membre') {
+                    isMembre = false;
+                }    
+            }
+            if(req.body.etat_civil.entreprise) {
+                isMembre = false
+            }
+            if(req.body.relation) {
+                isMembre = false
+            }
+            return isMembre;
+        } catch(e) {
+
         }
-        if(req.body.etat_civil.raison_sociale) {
-            isMembre = false
-        }
-        if(req.body.relation) {
-            isMembre = false
-        }
-        return isMembre;
+        
     },
 
     checkIsNonMembre : function(req) {
-        var isNonMembre = true;
-        if(req.body.common.entity_type != 'non-membre') {
-            isNonMembre = false;
+        try {
+            var isNonMembre = true;
+            if (req.method == 'POST') {
+                if(req.body.common.entity_type != 'non-membre') {
+                    isNonMembre = false;
+                }
+            }
+            if(req.body.etat_civil.entreprise) {
+                isNonMembre = false;
+            }
+            if(req.body.relation.activite) {
+                isNonMembre = false;
+            }
+            if(req.body.relation.representant_id) {
+                isNonMembre = false;
+            }
+            if(req.body.infos_asso) {
+                isNonMembre = false;
+            }
+            return isNonMembre;
+        }catch(e) {
+
         }
-        if(req.body.etat_civil.raison_sociale) {
-            isNonMembre = false;
-        }
-        if(req.body.relation.activite) {
-            isNonMembre = false;
-        }
-        if(req.body.relation.representant_id) {
-            isNonMembre = false;
-        }
-        if(req.body.infos_asso) {
-            isNonMembre = false;
-        }
-        return isNonMembre;
     },
 
     checkIsMorale : function(req) {
-        var isMorale = true;
-        if(req.body.common.entity_type != 'morale') {
-            isMorale = false;
+        try{
+            var isMorale = true;
+            if (req.method == 'POST') {
+                if(req.body.common.entity_type != 'morale') {
+                    isMorale = false;
+                }
+            }
+            if(req.body.etat_civil.titre) {
+                isMorale = false;
+            }
+            if(req.body.etat_civil.nom) {
+                isMorale = false;
+            }
+            if(req.body.etat_civil.prenom) {
+                isMorale = false;
+            }
+            if(req.body.etat_civil.sexe) {
+                isMorale = false;
+            }
+            if(req.body.etat_civil.date_naissance) {
+                isMorale = false;
+            }
+            if(req.body.etat_civil.lieu_naissance) {
+                isMorale = false;
+            }
+            if(req.body.etat_civil.dpt_naissance) {
+                isMorale = false;
+            }
+            if(req.body.etat_civil.statut_marital) {
+                isMorale = false;
+            }
+            if(req.body.infos_asso) {
+                isMorale = false;
+            }
+            return isMorale;
+        } catch(e) {
+
         }
-        if(req.body.etat_civil.titre) {
-            isMorale = false;
-        }
-        if(req.body.etat_civil.nom) {
-            isMorale = false;
-        }
-        if(req.body.etat_civil.prenom) {
-            isMorale = false;
-        }
-        if(req.body.etat_civil.sexe) {
-            isMorale = false;
-        }
-        if(req.body.etat_civil.date_naissance) {
-            isMorale = false;
-        }
-        if(req.body.etat_civil.lieu_naissance) {
-            isMorale = false;
-        }
-        if(req.body.etat_civil.dpt_naissance) {
-            isMorale = false;
-        }
-        if(req.body.etat_civil.statut_marital) {
-            isMorale = false;
-        }
-        if(req.body.infos_asso) {
-            isMorale = false;
-        }
-        return isMorale;
+        
+    },
+
+    checkEntity : function(req, res) {
+        var self = require('../controllers/entiteController');
+        Entite.findOne({ 'header_db.uid': req.params.uid }, 'common.entity_type', function (err, entite) {
+            if (err){
+                res.status(404);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if(!entite) {
+                res.status(404);
+                res.json({ success: false, message: 'object not found' });
+                return;   
+            }
+            if(entite.common.entity_type == 'membre' && !self.checkIsMembre(req)) {
+                res.status(400);
+                res.json({ success: false, message: 'incorrect values' });
+                return;       
+            }
+            if(entite.common.entity_type == 'non-membre' && !self.checkIsNonMembre(req)) {
+                res.status(400);
+                res.json({ success: false, message: 'incorrect values' });
+                return;       
+            }
+            if(entite.common.entity_type == 'morale' && !self.checkIsMorale(req)) {
+                res.status(400);
+                res.json({ success: false, message: 'incorrect values' });
+                return;       
+            }
+        });
     }
     
 }
