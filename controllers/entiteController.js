@@ -89,15 +89,7 @@ module.exports = {
                     return;
                 }
                 entite.common.image = fileName;
-                entite.save(function(err) {
-                    if (err){
-                        res.status(400);
-                        res.json({ success: false, message: err });
-                    }
-                    res.status(200);
-                    res.json({ success: true, message: 'avatar upload successful' });
-                    return;
-                });
+                crudController.putObjectFileCurrentUser(Entite, 'common.image', fileName, req, res, 'entity_id');
             });      
         });
     },
@@ -137,15 +129,7 @@ module.exports = {
                     return;
                 }
                 entite.common.image = fileName;
-                entite.save(function(err) {
-                    if (err){
-                        res.status(400);
-                        res.json({ success: false, message: err });
-                    }
-                    res.status(201);
-                    res.json({ success: true, message: 'avatar upload successful' });
-                    return;
-                });
+                crudController.putObjectFile(Entite, 'common.image', fileName, req, res);
             });      
         });
         
@@ -284,19 +268,13 @@ module.exports = {
                     res.send('Error uploading file');
                     return;
                 }
-                entite.infos_asso.fiche_rg.push({
+                var fileInfos = Array();
+                fileInfos.push({
                     annee: req.params.year,
                     file: fileName
                 });
-                entite.save(function(err) {
-                    if (err){
-                        res.status(400);
-                        res.json({ success: false, message: err });
-                    }
-                    res.status(201);
-                    res.json({ success: true, message: 'Fiche RG upload successful' });
-                    return;
-                });
+                crudController.putObjectFile(Entite, 'infos_asso.fiche_rg', fileInfos, req, res); 
+                
             });      
         });
     },
@@ -319,19 +297,12 @@ module.exports = {
                     res.send('Error uploading file');
                     return;
                 }
-                entite.infos_asso.fiche_rg.push({
+                var fileInfos = Array();
+                fileInfos.push({
                     annee: req.params.year,
                     file: fileName
                 });
-                entite.save(function(err) {
-                    if (err){
-                        res.status(400);
-                        res.json({ success: false, message: err });
-                    }
-                    res.status(201);
-                    res.json({ success: true, message: 'Fiche RG upload successful' });
-                    return;
-                });
+                crudController.putObjectFileCurrentUser(Entite, 'infos_asso.fiche_rg', fileName, req, res, 'entity_id');
             });      
         });
     },

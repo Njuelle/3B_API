@@ -10,14 +10,15 @@ module.exports = {
      * @param  req.body Request.body
      * @return Json
      */
-    makeJsonObject : function(req) {
+    makeJsonObject : function(req, res) {
+        var self = require('../controllers/headerController');
         var uid = mongoose.Types.ObjectId();
         var header_db = {
             uid         : uid,
             timestamp   : Date.now(),
             app         : '3B',
             statut      : 'current',
-            emetteur_id : '1'
+            emetteur_id : self.getUserIdFromToken(req, res)
         }
 
         var jsonArray = new Array();
@@ -66,6 +67,21 @@ module.exports = {
             return false;
         }
     },
+
+    updateEmetteur : function(req, res, object) {
+        var self = require('../controllers/headerController');
+        var emetteurId = self.getUserIdFromToken(req, res);
+        if (emetteurId) {
+            newObject.header_db.emeteur_id = emetteurId;
+            return object;    
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Update emetteur failed' });
+            return;
+        }
+        
+        
+    }
 
 
 }

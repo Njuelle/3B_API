@@ -15,7 +15,7 @@ module.exports = {
             req.body.password = self.hashPassword(req.body.password);
         }
         // create user from json object with db header        
-        var jsonObject = headerController.makeJsonObject(req);
+        var jsonObject = headerController.makeJsonObject(req, res);
         if(jsonObject.success == false) {
             res.status(400);
             res.json({ success: false, message: jsonObject.message });

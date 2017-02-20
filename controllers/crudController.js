@@ -7,7 +7,7 @@ var Belt             = require('jsbelt');
 
 module.exports = {
     postObject : function(model, req, res) {
-        var jsonObject = headerController.makeJsonObject(req);
+        var jsonObject = headerController.makeJsonObject(req, res);
         if(jsonObject.success == false) {
             res.json({ success: false, message: jsonObject.message });
             return;
@@ -129,18 +129,96 @@ module.exports = {
             var jsonObject = self.createJsonObject(object, req.body);
             var newObject = new model(jsonObject);
             //update emeteur ID and timestamp
-            var emeteurId = headerController.getUserIdFromToken(req, res);
-            if (!emeteurId) {
+            var emetteurId = headerController.getUserIdFromToken(req, res);
+            if (!emetteurId) {
                 res.status(400);
                 res.json({ success: false, message: 'Invalid token' });
                 return;
             }
-            newObject.header_db.emeteur_id = emeteurId;
+            newObject.header_db.emetteur_id = emetteurId;
             newObject = headerController.updateTimeStamp(newObject);
             //validate the new object
             newObject.validate(function(err) {
                 if (err) {
                     // console.log(newObject);
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;       
+                }
+
+                model.collection.insert(newObject, function(err){
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Modifications successful' });
+                        });
+                    });
+                });
+            });
+        });     
+    },
+
+    putObjectFile : function(model, childPath, fileInfos, req, res) {
+        var uid = req.params.uid;
+        var self = require('../controllers/crudController');
+        //find the object to update without _id
+        model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
+            if (err) {
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if (!object) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            var child = Belt._get(object, childPath);
+            if (Array.isArray(child)){
+                child.push(fileInfos);
+                var object = Belt._set(object, childPath, child);
+            } else {
+                var object = Belt._set(object, childPath, fileInfos);
+            }
+            //create new object and change data
+            var jsonObject = self.createJsonObject(object, req.body);
+            var newObject = new model(object);
+            var emetteurId = headerController.getUserIdFromToken(req, res);
+            if (!emetteurId) {
+                res.status(400);
+                res.json({ success: false, message: 'Invalid token' });
+                return;
+            }
+            newObject.header_db.emetteur_id = emetteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
                     res.status(400);
                     res.json({ success: false, message: err });
                     return;       
@@ -208,13 +286,13 @@ module.exports = {
             //create new object and change data
             var jsonObject = self.createJsonObject(object, req.body);
             var newObject = new model(object);
-            var emeteurId = headerController.getUserIdFromToken(req, res);
-            if (!emeteurId) {
+            var emetteurId = headerController.getUserIdFromToken(req, res);
+            if (!emetteurId) {
                 res.status(400);
                 res.json({ success: false, message: 'Invalid token' });
                 return;
             }
-            newObject.header_db.emeteur_id = emeteurId;
+            newObject.header_db.emetteur_id = emetteurId;
             newObject = headerController.updateTimeStamp(newObject);
             //validate the new object
             newObject.validate(function(err) {
@@ -261,15 +339,95 @@ module.exports = {
         });     
     },
 
-    putObjectChildCurrentUser : function(model, childPath, req, res, relationField) {
-        var emeteurId = headerController.getUserIdFromToken(req, res);
-        if (!emeteurId) {
+    putObjectFileCurrentUser : function(model, childPath, fileInfos, req, res, relationField) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
             res.status(400);
             res.json({ success: false, message: 'Invalid token' });
             return;
         }
         var self = require('../controllers/crudController');
-        User.findOne({ 'header_db.uid': emeteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+        User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+            var relationId = Belt._get(user, relationField);
+            //find the object to update without _id
+            model.findOne({ 'header_db.uid': relationId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
+                if (err) {
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;
+                }
+                if (!object) {
+                    res.status(404);
+                    res.json({ success: false, message: 'Object not found' });
+                    return;
+                }
+                var child = Belt._get(object, childPath);
+                if (Array.isArray(child)){
+                    child.push(fileInfos);
+                    var object = Belt._set(object, childPath, child);
+                } else {
+                    var object = Belt._set(object, childPath, fileInfos);
+                }
+                //create new object and change data
+                var jsonObject = self.createJsonObject(object, req.body);
+                var newObject = new model(object);
+                newObject.header_db.emetteur_id = emetteurId;
+                newObject = headerController.updateTimeStamp(newObject);
+                //validate the new object
+                newObject.validate(function(err) {
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+
+                    model.collection.insert(newObject, function(err){
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;       
+                        }
+                        // new object has been added to DB,
+                        // now change statut to old object :
+                        // first : need to find again the old object...
+                        model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                            if (err) {
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            if (!object) {
+                                res.status(404);
+                                res.json({ success: false, message: 'Object not found' });
+                                return;
+                            }
+                            object = headerController.changeToOldStatut(object);
+                            //finnaly save old object
+                            object.save(function(err) {
+                                if (err){
+                                    res.status(400);
+                                    res.json({ success: false, message: err });
+                                    return;
+                                }
+                                res.status(202);
+                                res.json({ success: true, message: 'Modifications successful' });
+                            });
+                        });
+                    });
+                });
+            });     
+        });
+    },    
+
+    putObjectChildCurrentUser : function(model, childPath, req, res, relationField) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+        var self = require('../controllers/crudController');
+        User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
             var relationId = Belt._get(user, relationField);
             //find the object to update without _id
             model.findOne({ 'header_db.uid': relationId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
@@ -293,7 +451,7 @@ module.exports = {
                 //create new object and change data
                 var jsonObject = self.createJsonObject(object, req.body);
                 var newObject = new model(object);
-                newObject.header_db.emeteur_id = emeteurId;
+                newObject.header_db.emetteur_id = emetteurId;
                 newObject = headerController.updateTimeStamp(newObject);
                 //validate the new object
                 newObject.validate(function(err) {
@@ -341,41 +499,6 @@ module.exports = {
         });
     },
 
-    putObjectSubDoc : function(model, subDoc, req, res) {
-        var uid = req.params.uid;
-        model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, function (err, object) {
-            if (err  || !object) {
-                res.status(400);
-                res.json({ success: false, message: err });
-                return;
-            }
-            object = headerController.changeToOldStatut(object);
-            object.save(function(err) {
-                if (err){
-                    res.status(400);
-                    res.json({ success: false, message: err });
-                    return;
-                }
-                object = headerController.changeToCurrentStatut(object);
-                object = headerController.updateTimeStamp(object);
-                object._id = mongoose.Types.ObjectId();
-                    
-                for (var field in req.body) {
-                    object[subDoc][field] = req.body[field];
-                }
-                
-                model.collection.insert(object, function(err) {
-                    if (err){
-                        res.status(400);
-                        res.json({ success: false, message: err });
-                    }
-                    res.status(202);
-                    res.json({ success: true, message: 'Modifications successful' });
-                });
-            });
-        });     
-    },
-
     deleteObject : function(model, req, res) {
         var uid = req.params.uid;
         model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, function (err, object) {
@@ -386,6 +509,7 @@ module.exports = {
             }
             object = headerController.changeToDeleteStatut(object);
             object = headerController.updateTimeStamp(object);
+            object = headerController.updateEmetteur(req,res, object);
             object.save(function(err) {
                 if (err){
                     res.status(400);
