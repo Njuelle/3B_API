@@ -8,11 +8,6 @@ var mime             = require('mime-types');
 
 
 module.exports = {
-    
-    postEntite : function(req, res) {
-        crudController.postObject(Entite, req, res);
-    },
-
     getBaselog : function(req, res) {
         var self = require('../controllers/entiteController');
         self.getEntiteFromCurrentUser(req, function(entite){

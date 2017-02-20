@@ -131,7 +131,6 @@ router.route('/entite/fiche_rg/user').get(entiteController.getFichesCurrentUser)
 router.route('/entite/fiche_rg/:uid').get(entiteController.getFiches);
 router.route('/entite/fiche_rg/user/:year').get(entiteController.getFicheCurrentUser);
 router.route('/entite/fiche_rg/:uid/:year').get(entiteController.getFiche);
-
 router.route('/entite/groupe/:uid').get(entiteController.getGroupe);
 router.route('/entite/groupe/:uid').put(entiteController.putGroupe);
 router.route('/entite').get(entiteController.getEntite);
