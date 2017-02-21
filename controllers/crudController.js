@@ -84,7 +84,6 @@ module.exports = {
     },
 
     getObjectChild : function(model, child, req, res) {
-
         var self = require('../controllers/crudController');
         var uid = req.params.uid;
         model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {

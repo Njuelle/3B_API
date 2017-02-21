@@ -81,8 +81,6 @@ router.route('/entite/competences/user').get(entiteController.getCompetencesCurr
 router.route('/entite/competences/user').put(entiteController.putCompetencesCurrentUser);
 router.route('/entite/competences/:uid').get(entiteController.getCompetences);
 router.route('/entite/competences/:uid').put(entiteController.putCompetences);
-router.route('/entite/contact/:uid').get(entiteController.getContact);
-router.route('/entite/contact/:uid').put(entiteController.putContact);
 router.route('/entite/adresse/:uid').get(entiteController.getAdresse);
 router.route('/entite/adresse/:uid').put(entiteController.putAdresse);
 router.route('/entite/etatcivil/user').get(entiteController.getEtatCivilCurrentUser);
