@@ -10,7 +10,7 @@ var mime             = require('mime-types');
 module.exports = {
     getBaselog : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var jsonArray = new Array();
             jsonArray['nom'] = entite.etat_civil.nom;
             jsonArray['prenom'] = entite.etat_civil.prenom;
@@ -23,7 +23,7 @@ module.exports = {
 
     getAvatarCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             if(entite.common.image) {
                 res.sendFile('/uploads/' + entite.common.image);
                 return;
@@ -75,7 +75,7 @@ module.exports = {
                 }
             }
         }
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var mimeExt = mime.extension(file.mimetype);
             var nameId = mongoose.Types.ObjectId();
             var fileName = nameId + '.' + mimeExt;
@@ -218,7 +218,7 @@ module.exports = {
 
     getFicheCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             for (var i = 0; i < entite.infos_asso.fiche_rg.length; i++) {
                 if(entite.infos_asso.fiche_rg[i].annee == req.params.year) {
                     res.sendFile('/uploads/' + entite.infos_asso.fiche_rg[i].file);
@@ -238,7 +238,7 @@ module.exports = {
 
     getFichesCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.fiche_rg');
             if (value) {
                 res.status(200);
@@ -299,7 +299,7 @@ module.exports = {
             return;
         }
         var file = req.files.file;
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var mimeExt = mime.extension(file.mimetype);
             var nameId = mongoose.Types.ObjectId();
             var fileName = nameId + '.' + mimeExt;
@@ -366,7 +366,7 @@ module.exports = {
 
     getVoyagePersonnelCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.voyages_personels');
             if (value) {
                 res.status(200);
@@ -400,7 +400,7 @@ module.exports = {
 
     getAutreAssoCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.autre_association');
             if (value) {
                 res.status(200);
@@ -434,7 +434,7 @@ module.exports = {
 
     getCompetencesCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.competences');
             if (value) {
                 res.status(200);
@@ -490,7 +490,7 @@ module.exports = {
 
     getEtatCivilCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'etat_civil');
             if (value) {
                 res.status(200);
@@ -524,7 +524,7 @@ module.exports = {
 
     getContactCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'contact');
             if (value) {
                 res.status(200);
@@ -569,7 +569,7 @@ module.exports = {
 
     getAdministrationCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.administration');
             if (value) {
                 res.status(200);
@@ -603,7 +603,7 @@ module.exports = {
 
     getMobiliteCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.mobilite');
             if (value) {
                 res.status(200);
@@ -637,7 +637,7 @@ module.exports = {
 
     getSanitaireCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.sanitaire');
             if (value) {
                 res.status(200);
@@ -671,7 +671,7 @@ module.exports = {
 
     getPereCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.parents.pere');
             if (value) {
                 res.status(200);
@@ -705,7 +705,7 @@ module.exports = {
 
     getMereCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.parents.mere');
             if (value) {
                 res.status(200);
@@ -739,7 +739,7 @@ module.exports = {
 
     getRepLegalCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.parents.responsable_legal_autre');
             if (value) {
                 res.status(200);
@@ -773,7 +773,7 @@ module.exports = {
 
     getScolariteCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.scolarite');
             if (value) {
                 res.status(200);
@@ -807,7 +807,7 @@ module.exports = {
 
     getLangueVivanteCurrentUser : function(req, res) {
         var self = require('../controllers/entiteController');
-        self.getEntiteFromCurrentUser(req, function(entite){
+        self.getEntiteFromCurrentUser(req, res, function(entite){
             var value = self.getProperty(entite, 'infos_asso.langues_vivantes');
             if (value) {
                 res.status(200);
@@ -839,7 +839,7 @@ module.exports = {
         crudController.putObjectChild(Entite, 'common.groupe', req, res);
     },
 
-    getEntiteFromCurrentUser : function(req, callback) {
+    getEntiteFromCurrentUser : function(req, res, callback) {
         var userId = userController.getUserIdFromToken(req);
         if (userId) {
             User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
