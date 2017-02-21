@@ -84,6 +84,8 @@ module.exports = {
     },
 
     getObjectChild : function(model, child, req, res) {
+
+        var self = require('../controllers/crudController');
         var uid = req.params.uid;
         model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {
             if (err){
@@ -99,10 +101,10 @@ module.exports = {
                 res.json({ success: false, message: 'Object not found' });   
                 return;
             }
-            var child = self.getProperty(object[0], child);
-            if (child) {
+            var childValue = self.getProperty(object[0], child);
+            if (childValue) {
                 res.status(200);
-                res.json(child);
+                res.json(childValue);
             } else {
                 res.status(404);
                 res.json({ success: false, message: 'No sub-document found' });
