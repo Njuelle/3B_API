@@ -8,7 +8,7 @@ var ProfilSchema = new mongoose.Schema({
     name : {
     	type: String,
     	required : true,
-    	unique : true,
+    	unique : false,
         lowercase: true
     },
     permissions_routage: [{
