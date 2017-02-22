@@ -11,8 +11,8 @@ module.exports = {
      * @param  res {[response]}
      */
     getToken : function(req, res) {
-        console.log(req.body.username);
-        console.log(req.body.password);
+        // console.log(req.body.username);
+        // console.log(req.body.password);
         var self = require('./authController');
         User.findOne({ username: req.body.username }, function (err, user) {
             if (err) { 
