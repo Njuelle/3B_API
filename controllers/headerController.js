@@ -13,19 +13,25 @@ module.exports = {
     makeJsonObject : function(req, res) {
         var self = require('../controllers/headerController');
         var uid = mongoose.Types.ObjectId();
+        var emetteur_id = self.getUserIdFromToken(req, res);
+        if(!emetteur_id) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return false; 
+        }
         var header_db = {
             uid         : uid,
             timestamp   : Date.now(),
             app         : '3B',
             statut      : 'current',
-            emetteur_id : self.getUserIdFromToken(req, res)
+            emetteur_id : emetteur_id
         }
 
         var jsonArray = new Array();
         jsonArray['header_db'] = header_db;
 
         for (var value in req.body) {
-            jsonArray[value] =req.body[value];
+            jsonArray[value] = req.body[value];
         }
         var json = Object.assign({}, jsonArray);
         return json;
@@ -72,11 +78,11 @@ module.exports = {
         var self = require('../controllers/headerController');
         var emetteurId = self.getUserIdFromToken(req, res);
         if (emetteurId) {
-            newObject.header_db.emeteur_id = emetteurId;
+            object.header_db.emeteur_id = emetteurId;
             return object;    
         } else {
             res.status(400);
-            res.json({ success: false, message: 'Update emetteur failed' });
+            res.json({ success: false, message: 'Invalid token' });
             return;
         }
         

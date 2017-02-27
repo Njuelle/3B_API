@@ -8,19 +8,21 @@ var Belt             = require('jsbelt');
 module.exports = {
     postObject : function(model, req, res) {
         var jsonObject = headerController.makeJsonObject(req, res);
-        if(jsonObject.success == false) {
-            res.json({ success: false, message: jsonObject.message });
-            return;
+        if(jsonObject) {
+            var object = new model(jsonObject);
+            object.save(function(err) {
+                if (err){
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                }
+                res.status(201);
+                res.json({ success: true, id: jsonObject.header_db.uid });
+            });    
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Post failed' });
         }
-        var object = new model(jsonObject);
-        object.save(function(err) {
-            if (err){
-                res.status(400);
-                res.json({ success: false, message: err });
-            }
-            res.status(201);
-            res.json({ success: true, id: jsonObject.header_db.uid });
-        });
+        
     },
 
     getAllObjects : function(model, req, res) {
@@ -503,22 +505,35 @@ module.exports = {
     deleteObject : function(model, req, res) {
         var uid = req.params.uid;
         model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' }, function (err, object) {
-            if (err  || !object) {
+            if (err) {
                 res.status(400);
                 res.json({ success: false, message: err });
                 return;
             }
+            if(!object) {
+                res.status(400);
+                res.json({ success: false, message: 'Object not found'});
+                return;   
+            }
+            // console.log(object);
             object = headerController.changeToDeleteStatut(object);
             object = headerController.updateTimeStamp(object);
             object = headerController.updateEmetteur(req,res, object);
-            object.save(function(err) {
-                if (err){
-                    res.status(400);
-                    res.json({ success: false, message: err });
-                }
-                res.status(200);
-                res.json({ success: true, message: 'Delete successful' });
-            });
+            if(object) {
+                object.save(function(err) {
+                    if (err){
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                    }
+                    res.status(200);
+                    res.json({ success: true, message: 'Delete successful' });
+                });    
+            } else {
+                res.status(400);
+                res.json({ success: true, message: 'Delete failed' });
+            }
+            
+            
         });         
     },
 

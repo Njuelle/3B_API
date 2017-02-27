@@ -974,35 +974,37 @@ module.exports = {
     },
 
     checkEntity : function(req, res) {
-        return
-        // var self = require('../controllers/entiteController');
-        // Entite.findOne({ 'header_db.uid': req.params.uid }, 'common.entity_type', function (err, entite) {
-        //     if (err){
-        //         res.status(404);
-        //         res.json({ success: false, message: err });
-        //         return;
-        //     }
-        //     if(!entite) {
-        //         res.status(404);
-        //         res.json({ success: false, message: 'object not found' });
-        //         return;   
-        //     }
-        //     if(entite.common.entity_type == 'membre' && !self.checkIsMembre(req)) {
-        //         res.status(400);
-        //         res.json({ success: false, message: 'incorrect values' });
-        //         return;       
-        //     }
-        //     if(entite.common.entity_type == 'non-membre' && !self.checkIsNonMembre(req)) {
-        //         res.status(400);
-        //         res.json({ success: false, message: 'incorrect values' });
-        //         return;       
-        //     }
-        //     if(entite.common.entity_type == 'morale' && !self.checkIsMorale(req)) {
-        //         res.status(400);
-        //         res.json({ success: false, message: 'incorrect values' });
-        //         return;       
-        //     }
-        // });
+        var self = require('../controllers/entiteController');
+        Entite.findOne({ 'header_db.uid': req.params.uid, 'header_db.statut' : 'current' }, 'common.entity_type', function (err, entite) {
+            if (err){
+                res.status(404);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if(!entite) {
+                res.status(404);
+                res.json({ success: false, message: 'object not found' });
+                return;   
+            }
+            if(entite.common.entity_type == 'membre' && !self.checkIsMembre(req)) {
+                console.log('1');
+                res.status(400);
+                res.json({ success: false, message: 'incorrect values' });
+                return;       
+            }
+            if(entite.common.entity_type == 'non-membre' && !self.checkIsNonMembre(req)) {
+                console.log('2');
+                res.status(400);
+                res.json({ success: false, message: 'incorrect values' });
+                return;       
+            }
+            if(entite.common.entity_type == 'morale' && !self.checkIsMorale(req)) {
+                console.log('3');
+                res.status(400);
+                res.json({ success: false, message: 'incorrect values' });
+                return;       
+            }
+        });
     }
     
 }
