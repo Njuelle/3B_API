@@ -8,7 +8,7 @@ var EntityNonMembreSchema = new mongoose.Schema({
   common: {
     image: {type: Object, required: false},
     groupe: {type: String, required: true, lowercase: true},
-    entity_type: {required: true, default: 'non-membre'},
+    entity_type: {type: String, required: true, default: 'non-membre'},
   },
   etat_civil: {
     titre: {type: String, required: true, enum: [ 'M.', 'Mme', 'Melle' ]},
@@ -24,7 +24,7 @@ var EntityNonMembreSchema = new mongoose.Schema({
   },
   adresse: {
     entete: {type: String, required: false},
-    num: {type: string, required: false, match: [/^[0-9]$/, '"num" fields provided not valid']},
+    num: {type: String, required: false, match: [/^[0-9]$/, '"num" fields provided not valid']},
     ind_rept: {type: String, required: false, enum: [ 'Bis', 'Ter', 'Quater', 'Quinquies', 'Sexies', 'Septies', 'Octies', 'Novies', 'Decies']},
     voie: {type: String, required: false, uppercase: true, match: [/^[a-zA-Z'-]+$/, '"voie" fields provided not valid']},
     zipcode: {type: String, required: true, match: [/^[0-9]{5}$/, '"zip_code" fields provided not valid']},

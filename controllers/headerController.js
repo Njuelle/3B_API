@@ -25,8 +25,32 @@ module.exports = {
         jsonArray['header_db'] = header_db;
 
         for (var value in req.body) {
-            jsonArray[value] =req.body[value];
+            if(Array.isArray(req.body[value])) {
+                var fullArray = new Array();
+                for (var index in req.body[value]) {
+                    var arrayTemp = req.body[value][index];
+                    arrayTemp['uid'] = mongoose.Types.ObjectId();
+                    fullArray.push(arrayTemp);
+                }
+                jsonArray[value] = fullArray;
+            } else{
+                for (var subValue in req.body[value]) {
+                    if(Array.isArray(req.body[value][subValue])) {
+                        var fullArray = new Array();
+                        for (var index2 in req.body[value][subValue]) {
+                            var arrayTemp = req.body[value][subValue][index2];
+                            arrayTemp['uid'] = mongoose.Types.ObjectId();
+                            fullArray.push(arrayTemp);
+                        }
+                        jsonArray[value][subValue] = fullArray;
+                    } else {
+                        jsonArray[value] = req.body[value];        
+                    }
+                }
+            }
+            
         }
+
         var json = Object.assign({}, jsonArray);
         return json;
     },
