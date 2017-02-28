@@ -1,15 +1,15 @@
  // Load required packages
-var PermissionRoute = require('../models/permissionRoute');
-var User            = require('../models/user');
-var Profil          = require('../models/profil');
-var crudController  = require('../controllers/crudController');
-var userController  = require('../controllers/userController');
-var mongoose        = require('mongoose');
+var Route          = require('../models/route');
+var User           = require('../models/user');
+var Profil         = require('../models/profil');
+var crudController = require('../controllers/crudController');
+var userController = require('../controllers/userController');
+var mongoose       = require('mongoose');
 
 module.exports = {
     
-    postPermissionRoute : function(req, res) {
-        PermissionRoute.findOne({
+    postRoute : function(req, res) {
+        Route.findOne({
                 'route'  : req.body.route, 
                 'method' : req.body.method
             },
@@ -24,20 +24,20 @@ module.exports = {
                     res.json({ success: false, message: 'duplicate route or method' });
                     return;
                 }
-                crudController.postObject(PermissionRoute, req, res);
+                crudController.postObject(Route, req, res);
             }
         );        
     },
 
-    getPermissionRoute : function(req, res) {
-        crudController.getAllObjects(PermissionRoute, req, res);
+    getRoute : function(req, res) {
+        crudController.getAllObjects(Route, req, res);
     },
 
-    getPermissionRouteById : function(req, res) {
-        crudController.getObjectById(PermissionRoute, req, res);  
+    getRouteById : function(req, res) {
+        crudController.getObjectById(Route, req, res);  
     },
 
-    getPermissionRouteCurrentUser : function(req, res) {
+    getRouteCurrentUser : function(req, res) {
         var userId = userController.getUserIdFromToken(req);
         if (userId) {
             User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
@@ -76,7 +76,7 @@ module.exports = {
                             ); 
                         });    
                     });
-                    PermissionRoute.find({'header_db.uid': { $in: listRoutesId}}, function(err, routes){
+                    Route.find({'header_db.uid': { $in: listRoutesId}}, function(err, routes){
                         if (err  || !routes) {
                             res.status(401);
                             res.json({ success: false, message: 'No routes founds' });
@@ -95,7 +95,7 @@ module.exports = {
         }    
     },
 
-    getPermissionRouteByUser : function(req, res) {
+    getRouteByUser : function(req, res) {
         var userId = req.params.uid;
         User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
             if (err){
@@ -123,7 +123,7 @@ module.exports = {
                         );    
                     });
                 }); 
-                PermissionRoute.find({'header_db.uid': { $in: listRoutesId}}, function(err, routes){
+                Route.find({'header_db.uid': { $in: listRoutesId}}, function(err, routes){
                     if (err  || !routes) {
                         res.status(401);
                         res.json({ success: false, message: 'No routes founds' });
@@ -137,12 +137,12 @@ module.exports = {
         });
     },
 
-    putPermissionRoute : function(req, res) {
-        crudController.putObject(PermissionRoute, req, res);
+    putRoute : function(req, res) {
+        crudController.putObject(Route, req, res);
     },
 
-    deletePermissionRoute : function(req, res) {
-        crudController.deleteObject(PermissionRoute, req, res);
+    deleteRoute : function(req, res) {
+        crudController.deleteObject(Route, req, res);
     }
 }
 
