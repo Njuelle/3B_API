@@ -39,7 +39,7 @@ module.exports = {
             var fullArray = child.concat(arrayTemp);
             var object = Belt._set(object, childPath, fullArray);
             //create new object and change data
-            var jsonObject = self.createJsonObject(object, req.body);
+            var jsonObject = self.createJsonObject(model, object, req.body);
             var newObject = new model(object);
             var emetteurId = headerController.getUserIdFromToken(req, res);
             if (!emetteurId) {
@@ -208,7 +208,7 @@ module.exports = {
                 return;
             }
             //create new object and change data
-            var jsonObject = self.createJsonObject(object, req.body);
+            var jsonObject = self.createJsonObject(model, object, req.body);
             var newObject = new model(jsonObject);
             //update emeteur ID and timestamp
             var emetteurId = headerController.getUserIdFromToken(req, res);
@@ -288,7 +288,7 @@ module.exports = {
                 var object = Belt._set(object, childPath, fileInfos);
             }
             //create new object and change data
-            var jsonObject = self.createJsonObject(object, req.body);
+            var jsonObject = self.createJsonObject(model, object, req.body);
             var newObject = new model(object);
             var emetteurId = headerController.getUserIdFromToken(req, res);
             if (!emetteurId) {
@@ -366,7 +366,7 @@ module.exports = {
             }
             var object = Belt._set(object, childPath, child);
             //create new object and change data
-            var jsonObject = self.createJsonObject(object, req.body);
+            var jsonObject = self.createJsonObject(model, object, req.body);
             var newObject = new model(object);
             var emetteurId = headerController.getUserIdFromToken(req, res);
             if (!emetteurId) {
@@ -438,18 +438,20 @@ module.exports = {
                 return;
             }
             var child = Belt._get(object, childPath);
-            var newValues = new Array();
+            var newValues = child;
             for (var key in child) {
                 if(!isNaN(key) && child[key].uid == rowId) {
-                    newValues = req.body;
-                    newValues['uid'] = child[key].uid;
-                    child[key] = newValues;
+                    for (var i in child[key]) {
+                        if(req.body[i]) {
+                            newValues[key][i] = req.body[i];
+                        } 
+                    }
                     break;
                 }
             }
-            var object = Belt._set(object, childPath, child);
+            var object = Belt._set(object, childPath, newValues);
             //create new object and change data
-            var jsonObject = self.createJsonObject(object, req.body);
+            var jsonObject = self.createJsonObject(model, object, req.body);
             var newObject = new model(object);
             var emetteurId = headerController.getUserIdFromToken(req, res);
             if (!emetteurId) {
@@ -534,7 +536,7 @@ module.exports = {
                     var object = Belt._set(object, childPath, fileInfos);
                 }
                 //create new object and change data
-                var jsonObject = self.createJsonObject(object, req.body);
+                var jsonObject = self.createJsonObject(model, object, req.body);
                 var newObject = new model(object);
                 newObject.header_db.emetteur_id = emetteurId;
                 newObject = headerController.updateTimeStamp(newObject);
@@ -614,7 +616,7 @@ module.exports = {
                 }
                 var object = Belt._set(object, childPath, child);
                 //create new object and change data
-                var jsonObject = self.createJsonObject(object, req.body);
+                var jsonObject = self.createJsonObject(model, object, req.body);
                 var newObject = new model(object);
                 newObject.header_db.emetteur_id = emetteurId;
                 newObject = headerController.updateTimeStamp(newObject);
@@ -748,14 +750,14 @@ module.exports = {
         return obj;
     },
 
-    createJsonObject: function(object, newDatas) {
+    createJsonObject: function(schema, object, newDatas) {
         var jsonArray = new Array();
-        for (var key in object) {
+        for (var key in schema.schema.obj) {
             if(newDatas[key]){
                 jsonArray[key] = newDatas[key];
             } else {
                 jsonArray[key] = object[key];
-            }
+            }    
         }
         var jsonObject = Object.assign({}, jsonArray);
         jsonObject['_id'] = mongoose.Types.ObjectId();

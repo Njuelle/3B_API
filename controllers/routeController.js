@@ -10,7 +10,7 @@ module.exports = {
     
     postRoute : function(req, res) {
         Route.findOne({
-                'route'  : req.body.route, 
+                'path'  : req.body.path, 
                 'method' : req.body.method
             },
             function(err, perm) {
@@ -19,6 +19,7 @@ module.exports = {
                     res.json({ success: false, message: err });
                     return;
                 }
+                console.log(perm);
                 if(perm) {
                     res.status(400);
                     res.json({ success: false, message: 'duplicate route or method' });

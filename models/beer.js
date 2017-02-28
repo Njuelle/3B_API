@@ -6,11 +6,13 @@ var HeaderSchema = require('./header');
 var BeerSchema = new mongoose.Schema({
 	header_db: HeaderSchema,
     name     : String,
+    com : String,
     test : [
 		{
 			_id : false,
 			uid : String,
-			qte : String
+			qte : String,
+			prix: String
 		}
     ]
 });

@@ -6,6 +6,7 @@ var HeaderSchema = require('./header');
 // Define our beer schema
 var RouteSchema = new mongoose.Schema({
     header_db: HeaderSchema,
+    com: String,
     path: {
         type: String,
         required: true,
