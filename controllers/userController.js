@@ -16,11 +16,6 @@ module.exports = {
         }
         // create user from json object with db header        
         var jsonObject = headerController.makeJsonObject(req, res);
-        if(jsonObject.success == false) {
-            res.status(400);
-            res.json({ success: false, message: jsonObject.message });
-            return;
-        }
         var user = new User(jsonObject);
         user.save(function(err) {
             if (err){
@@ -65,8 +60,103 @@ module.exports = {
         crudController.putObject(User, req, res);
     },
 
+
+    putUserCurrentUser : function(model, req, res) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+        var self = require('../controllers/crudController');
+        //find the object to update without _id
+        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
+            if (err) {
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if (!object) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            //create new object and change data
+            var jsonObject = self.createJsonObject(User, object, req.body);
+            var newObject = new User(jsonObject);
+            //update emeteur ID and timestamp
+            var emetteurId = headerController.getUserIdFromToken(req, res);
+            if (!emetteurId) {
+                res.status(400);
+                res.json({ success: false, message: 'Invalid token' });
+                return;
+            }
+            newObject.header_db.emetteur_id = emetteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
+                    // console.log(newObject);
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;       
+                }
+
+                User.collection.insert(newObject, function(err){
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Modifications successful' });
+                        });
+                    });
+                });
+            });
+        });     
+    },
+
     deleteUser : function(req, res) {
         crudController.deleteObject(User, req, res);
+    },
+
+    postProfil : function(req,res) {
+        crudController.postObjectChild(Profil, 'profils', req, res);
+    },
+
+    getProfil : function(req,res) {
+        crudController.getObjectChildRow(Profil, 'profils', req, res);
+    },
+
+    deleteProfil : function(req,res) {
+        crudController.deleteObjectChildRow(Profil, 'profils', req, res);
+    },
+
+    putProfil : function(req,res) {
+        crudController.putObjectChildRow(Profil, 'profils', req, res);
     },
 
     hashPassword : function(password) {

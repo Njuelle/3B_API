@@ -7,6 +7,9 @@ var entiteMembreRoutes    = require('./routes/entiteMembre.js');
 var beerRoutes            = require('./routes/beer.js');
 var authRoutes            = require('./routes/auth.js');
 var routeRoutes            = require('./routes/route.js');
+var menuRoutes            = require('./routes/menu.js');
+var profilRoutes            = require('./routes/profil.js');
+var userRoutes            = require('./routes/user.js');
 var mongoose              = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/3bdb');
 
@@ -24,12 +27,15 @@ var port = process.env.PORT || 3000;
 // Create our Express router
 var router = express.Router();
 
-// Register all our routes with /api and use routes.js
+// Register all our routes with /api/object and use routes.js
 app.use('/api/entite/nonmembre', entiteNonMembreRoutes);
 app.use('/api/entite/membre', entiteMembreRoutes);
 app.use('/api/beer', beerRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/route', routeRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/profil', profilRoutes);
+app.use('/api/user', userRoutes);
 
 // Start the server
 app.listen(port);

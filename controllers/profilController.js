@@ -87,6 +87,38 @@ module.exports = {
 
     deleteProfil : function(req, res) {
         crudController.deleteObject(Profil, req, res);
+    },
+
+    postRoute : function(req,res) {
+        crudController.postObjectChild(Profil, 'permissions_routage', req, res);
+    },
+
+    getRoute : function(req,res) {
+        crudController.getObjectChildRow(Profil, 'permissions_routage', req, res);
+    },
+
+    deleteRoute : function(req,res) {
+        crudController.deleteObjectChildRow(Profil, 'permissions_routage', req, res);
+    },
+
+    putRoute : function(req,res) {
+        crudController.putObjectChildRow(Profil, 'permissions_routage', req, res);
+    },
+
+    postMenu : function(req,res) {
+        crudController.postObjectChild(Profil, 'permissions_menu', req, res);
+    },
+
+    getMenu : function(req,res) {
+        crudController.getObjectChildRow(Profil, 'permissions_menu', req, res);
+    },
+
+    deleteMenu : function(req,res) {
+        crudController.deleteObjectChildRow(Profil, 'permissions_menu', req, res);
+    },
+
+    putMenu : function(req,res) {
+        crudController.putObjectChildRow(Profil, 'permissions_menu', req, res);
     }
 }
 

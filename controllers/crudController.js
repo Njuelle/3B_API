@@ -191,7 +191,6 @@ module.exports = {
         });
     },
 
-
     putObject : function(model, req, res) {
         var uid = req.params.uid;
         var self = require('../controllers/crudController');

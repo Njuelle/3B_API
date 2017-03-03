@@ -4,19 +4,18 @@ var HeaderSchema = require('./header');
 
 // Define our beer schema
 var ProfilSchema = new mongoose.Schema({
-	header_db: HeaderSchema,
-    name : {
-    	type: String,
-    	required : true,
-    	unique : false,
-        lowercase: true
-    },
-    permissions_routage: [{
-    	routage_id: {type: mongoose.Schema.Types.ObjectId, required: false}
-    }],
-    permissions_menu: [{
-        menu_id: {type: mongoose.Schema.Types.ObjectId, required: false}
-    }],
+  header_db: HeaderSchema,
+  name: {type: String, required: true, match: [/^[a-zA-Zàâçéèêëîïôûùüÿñæœ ']+$/, '"name" fields provided not valid']},
+  permissions_routage: [{
+    _id: false,
+    uid: {type: mongoose.Schema.Types.ObjectId, required: false},
+    routage_id: {type: mongoose.Schema.Types.ObjectId, required: false}
+  }],
+  permissions_menu: [{
+    _id: false,
+    uid: {type: mongoose.Schema.Types.ObjectId, required: false},
+    menu_id: {type: mongoose.Schema.Types.ObjectId, required: false}
+  }]
 });
 
 // Export the Mongoose model

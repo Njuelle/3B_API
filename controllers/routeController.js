@@ -142,6 +142,8 @@ module.exports = {
         crudController.putObject(Route, req, res);
     },
 
+    
+
     deleteRoute : function(req, res) {
         crudController.deleteObject(Route, req, res);
     }
