@@ -5,6 +5,7 @@ var User             = require('../models/user');
 var Belt             = require('jsbelt');
 
 module.exports = {
+
     postObject : function(model, req, res) {
         var jsonObject = headerController.makeJsonObject(req, res);
         var object = new model(jsonObject);
@@ -701,9 +702,17 @@ module.exports = {
     },
 
     deleteObjectChildRow : function(model, childPath, req, res) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+
         var self = require('../controllers/crudController');
         var uid = req.params.uid;
         var rowId = req.params.rowId;
+
         model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {
             if (err){
                 res.status(404);
@@ -728,14 +737,51 @@ module.exports = {
                 }
             }
             var object = Belt._set(object[0], childPath, newValues);
-            object.save(function(err) {
-                if (err){
+            var jsonObject = self.createJsonObject(model, object, req.body);
+            var newObject = new model(object);
+            newObject.header_db.emetteur_id = emetteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
                     res.status(400);
                     res.json({ success: false, message: err });
-                    return;
+                    return;       
                 }
-                res.status(202);
-                res.json({ success: true, message: 'Row delete successful' });
+
+                model.collection.insert(newObject, function(err){
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    model.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Delete row successful' });
+                        });
+                    });
+                });
             });
         });
     },

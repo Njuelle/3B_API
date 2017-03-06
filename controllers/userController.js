@@ -3,6 +3,7 @@ var User             = require('../models/user');
 var headerController = require('../controllers/headerController');
 var crudController   = require('../controllers/crudController');
 var bcrypt           = require('bcrypt-nodejs');
+var Belt             = require('jsbelt');
 var mongoose         = require('mongoose');
 var jwt              = require('jsonwebtoken');
 
@@ -26,7 +27,285 @@ module.exports = {
             res.json({ success: true, id: jsonObject.header_db.uid });
         });
     },
+
+    postProfilCurrentUser(req, res) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+        //find the object to update without _id
+        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+            if (err) {
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if (!user) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            var child = Belt._get(user, 'profils');
+            var arrayTemp = req.body;
+            arrayTemp['uid'] = mongoose.Types.ObjectId();
+            var fullArray = child.concat(arrayTemp);
+            var user = Belt._set(user, 'profils', fullArray);
+            var jsonObject = crudController.createJsonObject(User, user, req.body);
+
+            var newObject = new User(user);
+            newObject.header_db.emetteur_id = emetteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;       
+                }
+
+                User.collection.insert(newObject, function(err){
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Modifications successful' });
+                        });
+                    });
+                });
+            });
+            
+        });     
+    },
+
+    putProfilCurrentUser(req, res) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+        var rowId = req.params.rowId;
+
+        //find the object to update without _id
+        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+            if (err) {
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if (!user) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            var child = Belt._get(object, 'profils');
+            var newValues = child;
+            for (var key in child) {
+                if(!isNaN(key) && child[key].uid == rowId) {
+                    for (var i in child[key]) {
+                        if(req.body[i]) {
+                            newValues[key][i] = req.body[i];
+                        } 
+                    }
+                    break;
+                }
+            }
+            var object = Belt._set(object, 'profils', newValues);
+            var jsonObject = crudController.createJsonObject(User, user, req.body);
+
+            var newObject = new User(user);
+            newObject.header_db.emetteur_id = emetteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;       
+                }
+
+                User.collection.insert(newObject, function(err){
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Modifications successful' });
+                        });
+                    });
+                });
+            });
+            
+        });     
+    },
     
+    deleteProfilCurrentUser(req, res) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+        var rowId = req.params.rowId;
+        //find the object to update without _id
+        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+            if (err) {
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if (!user) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            var child = Belt._get(object[0], 'profils');
+            var newValues = new Array();
+            for (var key in child) {
+                if(!isNaN(key)) {
+                    if(child[key].uid != rowId) {
+                        newValues.push(child[key]);
+                    }    
+                }
+            }
+            var user = Belt._set(user, 'profils', newValues);
+            var jsonObject = crudController.createJsonObject(User, user, req.body);
+            var newObject = new User(user);
+            newObject.header_db.emetteur_id = emetteurId;
+            newObject = headerController.updateTimeStamp(newObject);
+            //validate the new object
+            newObject.validate(function(err) {
+                if (err) {
+                    res.status(400);
+                    res.json({ success: false, message: err });
+                    return;       
+                }
+
+                User.collection.insert(newObject, function(err){
+                    if (err) {
+                        res.status(400);
+                        res.json({ success: false, message: err });
+                        return;       
+                    }
+                    // new object has been added to DB,
+                    // now change statut to old object :
+                    // first : need to find again the old object...
+                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                        if (err) {
+                            res.status(400);
+                            res.json({ success: false, message: err });
+                            return;
+                        }
+                        if (!object) {
+                            res.status(404);
+                            res.json({ success: false, message: 'Object not found' });
+                            return;
+                        }
+                        object = headerController.changeToOldStatut(object);
+                        //finnaly save old object
+                        object.save(function(err) {
+                            if (err){
+                                res.status(400);
+                                res.json({ success: false, message: err });
+                                return;
+                            }
+                            res.status(202);
+                            res.json({ success: true, message: 'Delete row successful' });
+                        });
+                    });
+                });
+            });
+        });     
+    },
+
+    getProfilCurrentUser(req, res) {
+        var emetteurId = headerController.getUserIdFromToken(req, res);
+        if (!emetteurId) {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+        var rowId = req.params.rowId;
+        //find the object to update without _id
+        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+            if (err) {
+                res.status(400);
+                res.json({ success: false, message: err });
+                return;
+            }
+            if (!user) {
+                res.status(404);
+                res.json({ success: false, message: 'Object not found' });
+                return;
+            }
+            var child = Belt._get(object[0], 'profils');
+            for (var key in child) {
+                if(!isNaN(key)) {
+                    if(child[key].uid != rowId) {
+                        var row = child[key];
+                    }    
+                }
+            }
+            if (row) {
+                res.status(200);
+                res.json(row);
+            } else {
+                res.status(404);
+                res.json({ success: false, message: 'No row found' });
+            }            
+            
+        });     
+    },
+
     getUserById : function(req, res) {
         crudController.getObjectById(User, req, res);
     },
@@ -35,7 +314,7 @@ module.exports = {
         crudController.getAllObjects(User, req, res);
     },
 
-    getCurrentUser : function(req, res) {
+    getUserCurrentUser : function(req, res) {
         var self = require('../controllers/userController');
         var userId = self.getUserIdFromToken(req);
         if (userId) {
