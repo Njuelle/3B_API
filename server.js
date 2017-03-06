@@ -4,6 +4,7 @@ var express               = require('express');
 var bodyParser            = require('body-parser');
 var entiteNonMembreRoutes = require('./routes/entiteNonMembre.js');
 var entiteMembreRoutes    = require('./routes/entiteMembre.js');
+var entiteMoraleRoutes    = require('./routes/entiteMorale.js');
 var beerRoutes            = require('./routes/beer.js');
 var authRoutes            = require('./routes/auth.js');
 var routeRoutes            = require('./routes/route.js');
@@ -30,6 +31,7 @@ var router = express.Router();
 // Register all our routes with /api/object and use routes.js
 app.use('/api/entite/nonmembre', entiteNonMembreRoutes);
 app.use('/api/entite/membre', entiteMembreRoutes);
+app.use('/api/entite/morale', entiteMoraleRoutes);
 app.use('/api/beer', beerRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/route', routeRoutes);
