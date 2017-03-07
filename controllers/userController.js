@@ -74,7 +74,7 @@ module.exports = {
                     // new object has been added to DB,
                     // now change statut to old object :
                     // first : need to find again the old object...
-                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                    User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' },function (err, object) {
                         if (err) {
                             res.status(400);
                             res.json({ success: false, message: err });
@@ -159,7 +159,7 @@ module.exports = {
                     // new object has been added to DB,
                     // now change statut to old object :
                     // first : need to find again the old object...
-                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                    User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' },function (err, object) {
                         if (err) {
                             res.status(400);
                             res.json({ success: false, message: err });
@@ -208,7 +208,7 @@ module.exports = {
                 res.json({ success: false, message: 'Object not found' });
                 return;
             }
-            var child = Belt._get(object[0], 'profils');
+            var child = Belt._get(user[0], 'profils');
             var newValues = new Array();
             for (var key in child) {
                 if(!isNaN(key)) {
@@ -239,7 +239,7 @@ module.exports = {
                     // new object has been added to DB,
                     // now change statut to old object :
                     // first : need to find again the old object...
-                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                    User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' },function (err, object) {
                         if (err) {
                             res.status(400);
                             res.json({ success: false, message: err });
