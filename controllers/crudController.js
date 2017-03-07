@@ -208,7 +208,7 @@ module.exports = {
                 return;
             }
             //create new object and change data
-            var jsonObject = self.createJsonObject(model, object, req.body);
+            var jsonObject = self.createJsonObjectForPut(model, object, req.body);
             var newObject = new model(jsonObject);
             //update emeteur ID and timestamp
             var emetteurId = headerController.getUserIdFromToken(req, res);
@@ -800,6 +800,22 @@ module.exports = {
         for (var key in schema.schema.obj) {
             if(newDatas[key]){
                 jsonArray[key] = newDatas[key];
+            } else {
+                jsonArray[key] = object[key];
+            }    
+        }
+        var jsonObject = Object.assign({}, jsonArray);
+        jsonObject['_id'] = mongoose.Types.ObjectId();
+        return jsonObject;
+    },
+
+    createJsonObjectForPut: function(schema, object, newDatas) {
+        var jsonArray = new Array();
+        for (var key in schema.schema.obj) {
+            if(newDatas[key]){
+                if(!Array.isArray(newDatas[key])){
+                    jsonArray[key] = newDatas[key];
+                }
             } else {
                 jsonArray[key] = object[key];
             }    
