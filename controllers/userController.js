@@ -287,7 +287,7 @@ module.exports = {
                 res.json({ success: false, message: 'Object not found' });
                 return;
             }
-            var child = Belt._get(object[0], 'profils');
+            var child = Belt._get(user[0], 'profils');
             for (var key in child) {
                 if(!isNaN(key)) {
                     if(child[key].uid != rowId) {
