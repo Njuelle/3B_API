@@ -713,7 +713,7 @@ module.exports = {
         var uid = req.params.uid;
         var rowId = req.params.rowId;
 
-        model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, function(err, object) {
+        model.find({'header_db.uid' : uid, 'header_db.statut' : 'current'}, '-_id' ).lean().exec( function(err, object) {
             if (err){
                 res.status(404);
                 res.json({ success: false, message: err });

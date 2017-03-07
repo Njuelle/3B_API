@@ -208,7 +208,8 @@ module.exports = {
                 res.json({ success: false, message: 'Object not found' });
                 return;
             }
-            var child = Belt._get(user[0], 'profils');
+            var child = Belt._get(user, 'profils');
+
             var newValues = new Array();
             for (var key in child) {
                 if(!isNaN(key)) {
@@ -217,6 +218,7 @@ module.exports = {
                     }    
                 }
             }
+            
             var user = Belt._set(user, 'profils', newValues);
             var jsonObject = crudController.createJsonObject(User, user, req.body);
             var newObject = new User(user);
@@ -341,13 +343,13 @@ module.exports = {
 
 
     putUserCurrentUser : function(model, req, res) {
+        var self = require('../controllers/crudController');
         var emetteurId = headerController.getUserIdFromToken(req, res);
         if (!emetteurId) {
             res.status(400);
             res.json({ success: false, message: 'Invalid token' });
             return;
         }
-        var self = require('../controllers/crudController');
         //find the object to update without _id
         User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
             if (err) {
