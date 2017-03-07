@@ -423,19 +423,19 @@ module.exports = {
     },
 
     postProfil : function(req,res) {
-        crudController.postObjectChild(User 'profils', req, res);
+        crudController.postObjectChild(User, 'profils', req, res);
     },
 
     getProfil : function(req,res) {
-        crudController.getObjectChildRow(User 'profils', req, res);
+        crudController.getObjectChildRow(User, 'profils', req, res);
     },
 
     deleteProfil : function(req,res) {
-        crudController.deleteObjectChildRow(User 'profils', req, res);
+        crudController.deleteObjectChildRow(User, 'profils', req, res);
     },
 
     putProfil : function(req,res) {
-        crudController.putObjectChildRow(User 'profils', req, res);
+        crudController.putObjectChildRow(User, 'profils', req, res);
     },
 
     hashPassword : function(password) {
