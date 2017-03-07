@@ -815,6 +815,8 @@ module.exports = {
             if(newDatas[key]){
                 if(!Array.isArray(newDatas[key])){
                     jsonArray[key] = newDatas[key];
+                } else {
+                    jsonArray[key] = object[key];    
                 }
             } else {
                 jsonArray[key] = object[key];
