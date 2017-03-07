@@ -36,7 +36,7 @@ module.exports = {
             return;
         }
         //find the object to update without _id
-        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+        User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
             if (err) {
                 res.status(400);
                 res.json({ success: false, message: err });
@@ -113,7 +113,7 @@ module.exports = {
         var rowId = req.params.rowId;
 
         //find the object to update without _id
-        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+        User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
             if (err) {
                 res.status(400);
                 res.json({ success: false, message: err });
@@ -197,7 +197,7 @@ module.exports = {
         }
         var rowId = req.params.rowId;
         //find the object to update without _id
-        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+        User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
             if (err) {
                 res.status(400);
                 res.json({ success: false, message: err });
@@ -276,7 +276,7 @@ module.exports = {
         }
         var rowId = req.params.rowId;
         //find the object to update without _id
-        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
+        User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, user) {
             if (err) {
                 res.status(400);
                 res.json({ success: false, message: err });
@@ -349,7 +349,7 @@ module.exports = {
         }
         var self = require('../controllers/crudController');
         //find the object to update without _id
-        User.findOne({ 'header_db.uid': emetteur_id , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
+        User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' }, '-_id' ).lean().exec(function (err, object) {
             if (err) {
                 res.status(400);
                 res.json({ success: false, message: err });
