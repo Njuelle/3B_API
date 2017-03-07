@@ -4,7 +4,7 @@ var router                    = express.Router();
 var routeController            = require('../controllers/routeController');
 
 router.route('').get(routeController.getRoute);
-router.route('/me').get(routeController.getRouteCurrentUser);
+router.route('/user/me').get(routeController.getRouteCurrentUser);
 router.route('/user/:uid').get(routeController.getRouteByUser);
 router.route('/:uid').get(routeController.getRouteById);
 router.route('').post(routeController.postRoute);

@@ -4,7 +4,7 @@ var router           = express.Router();
 var menuController   = require('../controllers/menuController');
 
 router.route('').get(menuController.getMenu);
-router.route('/me').get(menuController.getMenuCurrentUser);
+router.route('/user/me').get(menuController.getMenuCurrentUser);
 router.route('/user/:uid').get(menuController.getMenuByUser);
 router.route('/:uid').get(menuController.getMenuById);
 router.route('').post(menuController.postMenu);

@@ -4,7 +4,7 @@ var router           = express.Router();
 var profilController   = require('../controllers/profilController');
 
 router.route('').get(profilController.getProfil);
-router.route('/me').get(profilController.getProfilCurrentUser);
+router.route('/user/me').get(profilController.getProfilCurrentUser);
 router.route('/user/:uid').get(profilController.getProfilByUser);
 router.route('/:uid').get(profilController.getProfilById);
 router.route('').post(profilController.postProfil);
