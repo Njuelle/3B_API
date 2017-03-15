@@ -3,7 +3,7 @@ var router           = express.Router();
 var authentification = require('../middlewares/authentification');
 var userController   = require('../controllers/userController');
 
-// router.use(authentification.authentification);
+router.use(authentification.authentification);
 
 router.route('').get(userController.getUser);
 router.route('/me').put(userController.putUserCurrentUser);

@@ -1,7 +1,9 @@
 var express          = require('express');
 var router           = express.Router();
-// var authentification = require('../middlewares/authentification');
+var authentification = require('../middlewares/authentification');
 var profilController   = require('../controllers/profilController');
+
+router.use(authentification.authentification);
 
 router.route('').get(profilController.getProfil);
 router.route('/user/me').get(profilController.getProfilCurrentUser);

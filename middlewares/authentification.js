@@ -36,16 +36,13 @@ module.exports = {
                 
                 //get profils of current user
                 var listProfilId = self.getListProfilId(user);
-
                 Profil.find({'header_db.uid': { $in: listProfilId}}, function(err, profils){
                     if (err  || !profils) {
                         res.status(401);
                         res.json({ success: false, message: 'Authentication failed. No profil founds' });
                         return;
                     }
-                    
                     listPermsId = self.getListRouteId(profils);
-
 
                     Route.find({'header_db.uid': { $in: listPermsId}}, function(err, permissions){
                         if (err  || !permissions) {
@@ -110,12 +107,8 @@ module.exports = {
     checkIsAuth: function(routes, req) {
         var method = req.method;
         var originalUrl = req.originalUrl;
-        var path = req.route.path;
-        originalUrl = originalUrl.replace('/api/', '');
-        var index = originalUrl.indexOf('/');
-        var sub = originalUrl.substring(0, index);
-        var url = '/' + sub + path;
-        
+        var url = originalUrl.replace(/[0-9a-fA-F]{24}/g, ':uid');
+        var url = url.replace('/api', '');
         var isAuth = false;
         routes.forEach(function(route) { 
             if(route.path == url && route.method == method) {
