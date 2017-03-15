@@ -7,11 +7,12 @@ var entiteMembreRoutes    = require('./routes/entiteMembre.js');
 var entiteMoraleRoutes    = require('./routes/entiteMorale.js');
 var beerRoutes            = require('./routes/beer.js');
 var authRoutes            = require('./routes/auth.js');
-var routeRoutes            = require('./routes/route.js');
+var routeRoutes           = require('./routes/route.js');
 var menuRoutes            = require('./routes/menu.js');
-var profilRoutes            = require('./routes/profil.js');
+var profilRoutes          = require('./routes/profil.js');
 var userRoutes            = require('./routes/user.js');
 var mongoose              = require('mongoose');
+var authentification      = require("./middlewares/authentification");
 mongoose.connect('mongodb://localhost:27017/3bdb');
 
 // Create our Express application
@@ -27,6 +28,7 @@ var port = process.env.PORT || 3000;
 
 // Create our Express router
 var router = express.Router();
+
 
 // Register all our routes with /api/object and use routes.js
 app.use('/api/entite/nonmembre', entiteNonMembreRoutes);

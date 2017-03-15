@@ -1,13 +1,11 @@
-var mongoose        = require('mongoose');
-var User            = require('../models/user');
-var Profil          = require('../models/profil');
-var PermissionRoute = require('../models/permissionRoute');
-var jwt             = require('jsonwebtoken');
+var mongoose = require('mongoose');
+var User     = require('../models/user');
+var Profil   = require('../models/profil');
+var Route    = require('../models/route');
+var jwt      = require('jsonwebtoken');
 
 
 module.exports = {
-
-
     /**
      * Main authentification middleware function
      * for router, called before each routes function 
@@ -46,14 +44,17 @@ module.exports = {
                         return;
                     }
                     
-                    listPermsId = self.getListPermId(profils);
-                    PermissionRoute.find({'header_db.uid': { $in: listPermsId}}, function(err, permissions){
+                    listPermsId = self.getListRouteId(profils);
+
+
+                    Route.find({'header_db.uid': { $in: listPermsId}}, function(err, permissions){
                         if (err  || !permissions) {
                             res.status(401);
                             res.json({ success: false, message: 'Authentication failed. No permission founds' });
                             return;
                         }
-                        if (self.checkIsAuth(permissions)){
+
+                        if (self.checkIsAuth(permissions, req)){
                             callback();
                         } else {
                             res.status(403);
@@ -86,7 +87,7 @@ module.exports = {
 
     getListProfilId: function(user) {
         var listProfilId = Array();
-        user.profils.forEach(function(profil) { 
+        user.profils.forEach(function(profil) {
             listProfilId.push(
                 mongoose.Types.ObjectId(profil.profil_id)
             );
@@ -94,22 +95,30 @@ module.exports = {
         return listProfilId;
     },
 
-    getListPermId: function(profils) {
+    getListRouteId: function(profils) {
         listPermsId = Array();
         profils.forEach(function(profil) { 
-            profil.permissions.forEach(function(perms) { 
+            profil.permissions_routage.forEach(function(perms) { 
                 listPermsId.push(
-                    mongoose.Types.ObjectId(perms.permission_id)
+                    mongoose.Types.ObjectId(perms.routage_id)
                 );     
             });   
         });
         return listPermsId;
     },
 
-    checkIsAuth: function(permissions) {
+    checkIsAuth: function(routes, req) {
+        var method = req.method;
+        var originalUrl = req.originalUrl;
+        var path = req.route.path;
+        originalUrl = originalUrl.replace('/api/', '');
+        var index = originalUrl.indexOf('/');
+        var sub = originalUrl.substring(0, index);
+        var url = '/' + sub + path;
+        
         var isAuth = false;
-        permissions.forEach(function(permission) { 
-            if(permission.permission) {
+        routes.forEach(function(route) { 
+            if(route.path == url && route.method == method) {
                 isAuth = true;
             }    
         });

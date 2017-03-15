@@ -426,6 +426,7 @@ module.exports = {
     },
 
     getMenuCurrentUser : function(req, res) {
+        // console.log(req.method);
         var self = require('../controllers/crudController');
         var userId = headerController.getUserIdFromToken(req, res);
         if (userId) {
