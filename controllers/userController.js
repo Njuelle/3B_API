@@ -1,5 +1,8 @@
 // Load required packages
 var User             = require('../models/user');
+var Profil           = require('../models/profil');
+var Route            = require('../models/route');
+var Menu             = require('../models/menu');
 var headerController = require('../controllers/headerController');
 var crudController   = require('../controllers/crudController');
 var bcrypt           = require('bcrypt-nodejs');
@@ -289,14 +292,16 @@ module.exports = {
                 res.json({ success: false, message: 'Object not found' });
                 return;
             }
-            var child = Belt._get(user[0], 'profils');
+            var child = Belt._get(user, 'profils');
+            
             for (var key in child) {
                 if(!isNaN(key)) {
-                    if(child[key].uid != rowId) {
+                    if(child[key].uid == rowId) {
                         var row = child[key];
                     }    
                 }
             }
+            
             if (row) {
                 res.status(200);
                 res.json(row);
@@ -342,7 +347,7 @@ module.exports = {
     },
 
 
-    putUserCurrentUser : function(model, req, res) {
+    putUserCurrentUser : function(req, res) {
         var self = require('../controllers/crudController');
         var emetteurId = headerController.getUserIdFromToken(req, res);
         if (!emetteurId) {
@@ -392,7 +397,7 @@ module.exports = {
                     // new object has been added to DB,
                     // now change statut to old object :
                     // first : need to find again the old object...
-                    User.findOne({ 'header_db.uid': uid , 'header_db.statut' : 'current' },function (err, object) {
+                    User.findOne({ 'header_db.uid': emetteurId , 'header_db.statut' : 'current' },function (err, object) {
                         if (err) {
                             res.status(400);
                             res.json({ success: false, message: err });
@@ -418,6 +423,113 @@ module.exports = {
                 });
             });
         });     
+    },
+
+    getMenuCurrentUser : function(req, res) {
+        var self = require('../controllers/crudController');
+        var userId = headerController.getUserIdFromToken(req, res);
+        if (userId) {
+            User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
+                if (err){
+                    res.status(404);
+                    res.json({ success: false, message: err });
+                }
+                var listProfilId = Array();
+                user.profils.forEach(function(profil) { 
+                    listProfilId.push(
+                        mongoose.Types.ObjectId(profil.profil_id)
+                    );
+                });
+                Profil.find({'header_db.uid': { $in: listProfilId}}, function(err, profils){
+                    if (err  || !profils) {
+                        res.status(401);
+                        res.json({ success: false, message: 'No profil founds' });
+                        return;
+                    }
+                    var listMenuId = Array();
+                    profils.forEach(function(profil){
+                        profil.permissions_menu.forEach(function(perm) { 
+                            listMenuId.push(
+                                mongoose.Types.ObjectId(perm.menu_id)
+                            );
+                        });    
+                    });
+                    Menu.find({'header_db.uid': { $in: listMenuId}}, function(err, menus){
+                        if (err  || !menus) {
+                            res.status(401);
+                            res.json({ success: false, message: 'No menus founds' });
+                            return;
+                        }
+                        res.status(200);
+                        res.json(menus);
+                        return;
+                    });        
+                });
+            });
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }
+    },
+
+    getRouteCurrentUser : function(req, res) {
+        var self = require('../controllers/crudController');
+        var userId = headerController.getUserIdFromToken(req, res);
+        if (userId) {
+            User.findOne({'header_db.uid' : userId, 'header_db.statut' : 'current'}, function(err, user) {
+                if (err) {
+                    res.status(404);
+                    res.json({ success: false, message: err });
+                    return;
+                }
+                if (!user) {
+                    res.status(401);
+                    res.json({ success: false, message: 'Invalid token' });
+                    return;
+                }
+                if (!user.profils) {
+                    res.status(401);
+                    res.json({ success: false, message: 'No profil founds' });
+                    return;
+                }
+                var listProfilId = Array();
+                user.profils.forEach(function(profil) { 
+                    listProfilId.push(
+                        mongoose.Types.ObjectId(profil.profil_id)
+                    );
+                });
+                Profil.find({'header_db.uid': { $in: listProfilId}}, function(err, profils){
+                    if (err  || !profils) {
+                        res.status(401);
+                        res.json({ success: false, message: 'No profil founds' });
+                        return;
+                    }
+                    var listRoutesId = Array();
+                    profils.forEach(function(profil){
+                        profil.permissions_routage.forEach(function(perm) { 
+                            listRoutesId.push(
+                                mongoose.Types.ObjectId(perm.routage_id)
+                            ); 
+                        });    
+                    });
+                    Route.find({'header_db.uid': { $in: listRoutesId}}, function(err, routes){
+                        if (err  || !routes) {
+                            res.status(401);
+                            res.json({ success: false, message: 'No routes founds' });
+                            return;
+                        }
+                        res.status(200);
+                        res.json(routes);
+                        return;
+                    });        
+                });
+            });
+        } else {
+            res.status(400);
+            res.json({ success: false, message: 'Invalid token' });
+            return;
+        }    
     },
 
     deleteUser : function(req, res) {

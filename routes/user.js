@@ -4,13 +4,15 @@ var router           = express.Router();
 var userController   = require('../controllers/userController');
 
 router.route('').get(userController.getUser);
-router.route('/me').get(userController.getUserCurrentUser);
 router.route('/me').put(userController.putUserCurrentUser);
+router.route('/me').get(userController.getUserCurrentUser);
 router.route('/:uid').get(userController.getUserById);
 router.route('').post(userController.postUser);
 router.route('/:uid').put(userController.putUser);
 router.route('/:uid').delete(userController.deleteUser);
 router.route('/me/profil').post(userController.postProfilCurrentUser);
+router.route('/me/profil/route').get(userController.getRouteCurrentUser);
+router.route('/me/profil/menu').get(userController.getMenuCurrentUser);
 router.route('/me/profil/:rowId').get(userController.getProfilCurrentUser);
 router.route('/me/profil/:rowId').delete(userController.deleteProfilCurrentUser);
 router.route('/me/profil/:rowId').put(userController.putProfilCurrentUser);
